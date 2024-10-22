@@ -30,11 +30,16 @@ module.exports.signup = function(username, email, password, status, callback) {
             console.log(query);
         } else {
             console.log("Error:", err.message);
-        }        
+        }  
     }
 }
 
 module.exports.verify = function(username, email, token, callback) {
     var query = "INSERT INTO `verify`(`username`,`email`,`token`) VALUES(`${username},${email},${token}`)";
+    conn.query(query, callback);
+}
+
+module.exports.getuserid = function(email, callback) {
+    var query = "SELECT * from verify WHERE email = `${email}`";
     conn.query(query, callback);
 }

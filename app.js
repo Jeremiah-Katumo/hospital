@@ -11,8 +11,9 @@ var expressValidator = require('express-validator');
 var sweetalert = require('sweetalert2');
 var bodyParser = require('body-parser');
 const http = require('http');
-var db = require('./database/db');
 var dotenv = require('dotenv');
+
+var db = require.main.require('./database/db');
 var signup = require('./controllers/signup');
 
 
@@ -41,5 +42,3 @@ const server = () => {
         console.log(err);
     });
 };
-
-// server.listen();
