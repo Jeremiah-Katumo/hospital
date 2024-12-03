@@ -1,24 +1,13 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var db = require('./database/db');
-var mysql = require('mysql2');
-var nodemailer = require('nodemailer');
-var randomToken = require('random-token');
+import express from 'express';
+import bodyParser from 'body-parser';
+import db from '../database/db.js';
+import mysql from 'mysql2';
+import nodemailer from 'nodemailer';
+import randomToken from 'random-token';
+import { validationResult } from 'express-validator';
 
-const { check, validationResult } = require('express-validator');
-
-var router = express.Router();
-
-router.use(bodyParser.urlencoded({ extended: true }));
-router.use(bodyParser.json());
-
-router.post('/', [
-    check('username').notEmpty().withMessage("Username is required"),
-    check('password').notEmpty().withMessage("Password is required"),
-    check('email').notEmpty().withMessage("Email is required")
-], function(req, res) {
-    errors = validationResult(req);
-
+export const signUp = (req, res) => {
+    const errors = validationResult(req);
     if (!error.isEmpty()) {
         return res.status(422).json({error: errors.array()});
     }
@@ -70,6 +59,4 @@ router.post('/', [
 
         res.send("Check your email for token to verify")
     });
-});
-
-module.exports = router;
+}
