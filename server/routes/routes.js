@@ -13,11 +13,20 @@ router.use(session({
     saveUninitialized: true
 }))
 
+const validate = (validations) => async (req, res, next) => {
+    await Promise.all(validations.map((validation) => validation.run(req)));
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+    next();
+};
+
 router.get('/', (req, res) => {
     res.render("signup.ejs");
 })
 
-router.post('/register', useSignUpValidator, runValidation, signUp)
-    .post('/login', useLogInValidator, runValidation, logIn)
+router.post('/register', validate(useSignUpValidator), signUp)
+    .post('/login', validate(useLogInValidator), logIn)
 
 export default router;
