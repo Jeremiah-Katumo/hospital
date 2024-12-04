@@ -32,6 +32,8 @@ export const getDoctorList = (req, res) => {
 
 export const addDoctor = (req, res) => {
     getAll(function(err, result) {
+        if (err) throw err;
+        
         res.render('doctor/add.ejs', {list: result});
     })
 }
@@ -67,7 +69,7 @@ export const updateDoctor = (req, res) => {
 
     update(first_name, last_name, email, dob, gender, address, phone, department, biography, function(err, result) {
         if (err) throw err;
-        res.redirect('/doctor/list.ejs');
+        res.redirect('/doctor/list.ejs', {list: result});
     })
 }
 
