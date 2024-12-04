@@ -1,4 +1,3 @@
-import db from '../database/dbConnection.js';
 import { validationResult } from 'express-validator';
 // import { request } from 'http';
 import { successResponse, errorResponse } from '../helpers/responseHelper.js';

@@ -3,6 +3,7 @@ import session from 'express-session';
 import { signUp } from '../controllers/signup.js';
 import { logIn, logOut } from '../controllers/login.js';
 import { verify } from '../controllers/verify.js';
+import { reset } from '../controllers/reset.js';
 import { validate } from '../validations/index.js';
 import { useSignUpValidator, useLogInValidator } from '../validations/auth.js';
 
@@ -22,5 +23,6 @@ router.post('/register', validate(useSignUpValidator), signUp)
     .post('/login', validate(useLogInValidator), logIn)
     .post('/verify', verify)
     .get('/logout', logOut)
+    .post('/reset', reset)
 
 export default router;
