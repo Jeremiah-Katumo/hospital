@@ -7,7 +7,9 @@ import { getDoctor, getDoctorList,
     editDoctor,
     updateDoctor,
     deleteDoctor,
-    confirmDeleteDoctor, } from '../controllers/Doctor.js';
+    confirmDeleteDoctor,
+    getDoctorById,
+    searchDoctor, } from '../controllers/Doctor.js';
 
 
 var doctorRouter = express.Router();
@@ -20,11 +22,13 @@ doctorRouter.use(session({
 
 doctorRouter.get('*', getDoctor)
     .get('/', getDoctorList)
+    .get('/:id', getDoctorById)
     .get('/add_doctor', addDoctor)
     .post('/save_doctor', upload.single("image"), postDoctor)
     .get('/edit_doctor/:id', editDoctor)
     .post('/update_doctor/:id', updateDoctor)
     .get('/delete_doctor/:id', confirmDeleteDoctor)
     .post('/delete_doctor/:id', deleteDoctor)
+    .get('/search_doctor', searchDoctor)
 
 export default doctorRouter;

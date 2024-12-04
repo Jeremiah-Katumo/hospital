@@ -1,23 +1,23 @@
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
-import { getAll, getOne, post, update, search, trash } from '../services/doctorServices.js';
+import { getAll, getOne, post, search, trash, update } from '../services/doctorServices.js';
 
 
-export const getDoctor = (req, res, next) => {
-    if (req.cookies[username] === null) {
+export const getEmployer = (req, res, next) => {
+    if (res.cookies[username] === null) {
         res.redirect('/login');
     } else {
         next();
     }
 }
 
-export const getDoctorById = (req, res) => {
+export const getEmployerById = (req, res) => {
     var id = req.params.id;
     getOne(id, function(err, result) {
         if (err) throw err;
 
-        res.render('doctor/view.ejs', {list: result});
+        res.render('employer/view.ejs', {list: result});
     })
 }
 
@@ -33,21 +33,21 @@ var storage = multer.diskStorage({
 
 export var upload = multer({ storage: storage });
 
-export const getDoctorList = (req, res) => {
+export const getEmployerList = (req, res) => {
     getAll(function(err, result) {
         if (err) throw err;
 
-        res.render('doctor/list.ejs', {list: result});
+        res.render('employer/list.ejs', {list: result});
     })
 }
 
-export const addDoctor = (req, res) => {
+export const addEmployer = (req, res) => {
     if (err) throw err;
 
-    res.render('doctor/add.ejs', {list: result});
+    res.render('employer/add.ejs', {list: result});
 }
 
-export const postDoctor = (req, res) => {
+export const postEmployer = (req, res) => {
     var { 
         first_name, last_name, email, dob, gender, address, phone, filename, department, biography 
     } = req.body;
@@ -59,18 +59,18 @@ export const postDoctor = (req, res) => {
         console.log("1 doctor added successfuly!");
     }
 
-    res.render('/doctor/list.ejs');
+    res.render('/employer/list.ejs');
 }
 
-export const editDoctor = (req, res) => {
+export const editEmployer = (req, res) => {
     var id = req.params.id;
 
     getOne(id, function(err, result) {
-        res.render('/doctor/edit.ejs', {list: result});
+        res.render('/employer/edit.ejs', {list: result});
     })
 }
 
-export const updateDoctor = (req, res) => {
+export const updateEmployer = (req, res) => {
     var id = req.params.id;
     var { 
         id, first_name, last_name, email, dob, gender, address, phone, department, biography 
@@ -78,31 +78,31 @@ export const updateDoctor = (req, res) => {
 
     update(id, first_name, last_name, email, dob, gender, address, phone, department, biography, function(err, result) {
         if (err) throw err;
-        res.redirect('/doctor/list.ejs', {list: result});
+        res.redirect('/employer/list.ejs', {list: result});
     })
 }
 
-export const confirmDeleteDoctor = (req, res) => {
+export const confirmDeleteEmployer = (req, res) => {
     var id = req.params.id;
 
     getOne(id, function(err, result) {
-        res.render('/doctor/delete.ejs', {list: result});
+        res.render('/employer/delete.ejs', {list: result});
     })
 }
 
-export const deleteDoctor = (req, res) => {
+export const deleteEmployer = (req, res) => {
     var id = req.params.id;
 
     trash(id, function(err, result) {
-        res.render('/doctor/list.ejs', {list: result});
+        res.render('/employer/list.ejs', {list: result});
     })
 }
 
-export const searchDoctor = (req, res) => {
+export const searchEmployer = (req, res) => {
     var key = req.body.search;
 
     search(key, function(err, result) {
         console.log(result);
-        res.render('/doctor/list.ejs', {list: result});
+        res.render('/employer/list.ejs', {list: result});
     })
 }
