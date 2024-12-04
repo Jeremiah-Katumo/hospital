@@ -3,7 +3,7 @@ import session from 'express-session';
 import { signUp } from '../controllers/signup.js';
 import { logIn, logOut } from '../controllers/login.js';
 import { verify } from '../controllers/verify.js';
-import { runValidation } from '../validations/index.js';
+import { validate } from '../validations/index.js';
 import { useSignUpValidator, useLogInValidator } from '../validations/auth.js';
 
 const router = express.Router();
@@ -13,15 +13,6 @@ router.use(session({
     resave: true,
     saveUninitialized: true
 }))
-
-const validate = (validations) => async (req, res, next) => {
-    await Promise.all(validations.map((validation) => validation.run(req)));
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ success: false, errors: errors.array() });
-    }
-    next();
-};
 
 router.get('/', (req, res) => {
     res.render("signup.ejs");

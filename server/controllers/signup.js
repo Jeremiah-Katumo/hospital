@@ -1,6 +1,4 @@
-import db from '../database/dbConnection.js';
 import nodemailer from 'nodemailer';
-import crypto from 'crypto';
 // import randomToken from 'random-token';
 import { validationResult } from 'express-validator';
 import { successResponse, errorResponse } from '../helpers/responseHelper.js';
@@ -76,7 +74,7 @@ export const signUp = async (req, res) => {
     const { username, email, password } = req.body;
 
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await hashPassword(password);
         await insertUser(username, email, hashedPassword, 'not_verified');
 
         const token = generateToken({ username, email });
@@ -85,7 +83,7 @@ export const signUp = async (req, res) => {
         const userId = await getUserIdByEmail(email);
 
         // Prepare the email content
-        const verificationLink = `http://localhost:3000/verify`;
+        const verificationLink = `http://localhost:3000/api/v1/verify`;
         const output = `
             <p>Dear ${username},</p>
             <p>Thanks for signing up. Your verification details are below:</p>
