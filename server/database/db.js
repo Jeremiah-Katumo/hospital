@@ -54,4 +54,16 @@ export const getuserid = function(email, callback) {
     conn.query(query, callback);
 }
 
+export const matchtoken = function(id, token, callback) {
+    var query = "SELECT * from `verify` WHERE token = '"+token+"' and id = " +id ;
+    conn.query(query, callback);
+    console.log(query);
+}
+
+export const updateverify = function(email, email_status, callback) {
+    var query = "UPDATE `users` SET email_status = '"+email_status+"' WHERE email = " +email ;
+    conn.query(query, callback);
+    console.log(query);
+}
+
 export default db;

@@ -1,9 +1,7 @@
-import express from 'express';
-import bodyParser from 'body-parser';
 import db from '../database/db.js';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
-import randomToken from 'random-token';
+// import randomToken from 'random-token';
 import { validationResult } from 'express-validator';
 import { successResponse, errorResponse } from '../helpers/responseHelper.js';
 import { hashPassword } from '../helpers/bcryptHelper.js';

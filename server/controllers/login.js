@@ -1,12 +1,6 @@
-import express, { response } from 'express';
-import bodyParser from 'body-parser';
 import db from '../database/db.js';
-import mysql from 'mysql2';
-import session from 'express-session';
-import sweetAlert from 'sweetalert2';
 import { validationResult } from 'express-validator';
-import { request } from 'http';
-import { conn } from '../database/db.js';
+// import { request } from 'http';
 import { successResponse, errorResponse } from '../helpers/responseHelper.js';
 
 // conn = mysql.createPool({
@@ -94,3 +88,11 @@ export const logIn = async (req, res) => {
         return errorResponse(res, 'An error occurred during login', 500);
     }
 };
+
+export const logOut = (req, res) => {
+    // clear cookie after signout
+    res.clearCookie('token');
+    res.json({
+        message: 'Signout successful'
+    })
+}
