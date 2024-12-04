@@ -1,5 +1,4 @@
 import nodemailer from 'nodemailer';
-// import randomToken from 'random-token';
 import { validationResult } from 'express-validator';
 import { successResponse, errorResponse } from '../../helpers/responseHelper.js';
 import { hashPassword } from '../../helpers/bcryptHelper.js';
