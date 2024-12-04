@@ -1,9 +1,9 @@
 import express from 'express';
 import session from 'express-session';
-import { signUp } from '../controllers/signup.js';
-import { logIn, logOut } from '../controllers/login.js';
-import { verify } from '../controllers/verify.js';
-import { reset } from '../controllers/reset.js';
+import { signUp } from '../controllers/auth/signup.js';
+import { logIn, logOut } from '../controllers/auth/login.js';
+import { verify } from '../controllers/auth/verify.js';
+import { reset } from '../controllers/auth/reset.js';
 import { validate } from '../validations/index.js';
 import { useSignUpValidator, useLogInValidator } from '../validations/auth.js';
 

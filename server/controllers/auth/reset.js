@@ -1,15 +1,16 @@
 import flash from 'flash';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
-import db from '../database/dbConnection.js';
-import { generateToken } from '../helpers/jwtHelper.js'
+import db from '../../database/dbConnection.js';
+import { generateToken } from '../../helpers/jwtHelper.js'
+import { findOne, temp } from '../../services/resetServices.js';
 
 dotenv.config();
 
 export const reset = (req, res) => {
     var email = req.body.email;
 
-    db.findOne(email, function(err, resultone) {
+    findOne(email, function(err, resultone) {
         console.log('Mail does not exist!');
         res.redirect('Mail does not exist!');
 
@@ -18,7 +19,7 @@ export const reset = (req, res) => {
         var username = resultone[0].username;
         var token = generateToken(resultone[0]);
 
-        db.temp(id, email, token, function(err, resulttwo) {
+        temp(id, email, token, function(err, resulttwo) {
             var output = `<p>Dear `+username+`,</p> 
                 <p>You are seeing this email because you requested to reset your password.</p>
                 <ul>

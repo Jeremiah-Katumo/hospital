@@ -1,9 +1,9 @@
 import { validationResult } from 'express-validator';
 // import { request } from 'http';
-import { successResponse, errorResponse } from '../helpers/responseHelper.js';
+import { successResponse, errorResponse } from '../../helpers/responseHelper.js';
 import {
     findUserByUsername,
-} from '../services/authService.js';
+} from '../../services/authService.js';
 
 // conn = mysql.createPool({
 //     host: process.env.HOST,

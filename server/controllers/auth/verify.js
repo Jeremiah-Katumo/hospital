@@ -1,4 +1,4 @@
-import { matchToken, updateVerify } from '../services/verifyServices.js';
+import { matchToken, updateVerify } from '../../services/verifyServices.js';
 
 export const verify = (req, res) => {
     var { id, token } = req.body;

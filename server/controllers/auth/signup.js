@@ -1,13 +1,13 @@
 import nodemailer from 'nodemailer';
 // import randomToken from 'random-token';
 import { validationResult } from 'express-validator';
-import { successResponse, errorResponse } from '../helpers/responseHelper.js';
-import { hashPassword } from '../helpers/bcryptHelper.js';
+import { successResponse, errorResponse } from '../../helpers/responseHelper.js';
+import { hashPassword } from '../../helpers/bcryptHelper.js';
 import {
     insertUser,
     insertVerificationToken,
     getUserIdByEmail,
-} from '../services/authService.js';
+} from '../../services/authService.js';
 
 // export const signUp = (req, res) => {
 //     const errors = validationResult(req);
