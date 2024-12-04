@@ -15,7 +15,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { readdirSync } from 'fs';
 
-import db from './server/database/db.js';
+import db from './server/database/dbConnection.js';
 // import { signup, login } from './server/database/db.js';
 
 dotenv.config();

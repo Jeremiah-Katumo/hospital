@@ -1,7 +1,10 @@
-import db from '../database/db.js';
+import db from '../database/dbConnection.js';
 import { validationResult } from 'express-validator';
 // import { request } from 'http';
 import { successResponse, errorResponse } from '../helpers/responseHelper.js';
+import {
+    findUserByUsername,
+} from '../services/authService.js';
 
 // conn = mysql.createPool({
 //     host: process.env.HOST,
@@ -60,24 +63,19 @@ export const logIn = async (req, res) => {
     }
 
     try {
-        // Query the database for user credentials
-        const [results] = await db.query(
-            'SELECT * FROM users WHERE username = ? AND password = ?',
-            [username, password]
-        );
+        const user = await findUserByUsername(username);
 
-        if (results.length > 0) {
-            const user = results[0];
-            req.session.loggedin = true;
-            req.session.username = username;
+        if (user.length > 0) {
+            const isMatch = await comparePassword(password, user[0].password);
+            if (!isMatch) {
+                return errorResponse(res, 'Incorrect user credentials!');
+            }
 
-            // Generate a secure token for the session
-            const token = generateToken({ username: user.username, userId: user.id });
+            const token = generateToken({ username: user[0].username, userId: user[0].id });
+            res.cookie('authToken', token);
 
-            res.cookie('authToken', token); // Store the token in a cookie
-
-            if (user.email_status === 'not_verified') {
-                return errorResponse(res, 'Please make sure you verify your email!');
+            if (user[0].email_status === 'not_verified') {
+                return errorResponse(res, 'Please verify your email!');
             } else {
                 return successResponse(res, 'Logged In', { redirect: '/home', token });
             }
@@ -91,7 +89,7 @@ export const logIn = async (req, res) => {
 
 export const logOut = (req, res) => {
     // clear cookie after signout
-    res.clearCookie('token');
+    res.clearCookie('authToken');
     res.json({
         message: 'Signout successful'
     })

@@ -1,10 +1,15 @@
-import db from '../database/db.js';
+import db from '../database/dbConnection.js';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 // import randomToken from 'random-token';
 import { validationResult } from 'express-validator';
 import { successResponse, errorResponse } from '../helpers/responseHelper.js';
 import { hashPassword } from '../helpers/bcryptHelper.js';
+import {
+    insertUser,
+    insertVerificationToken,
+    getUserIdByEmail,
+} from '../services/authService.js';
 
 // export const signUp = (req, res) => {
 //     const errors = validationResult(req);
@@ -68,38 +73,16 @@ export const signUp = async (req, res) => {
         return errorResponse(res, 'Validation failed', 422, errors.array());
     }
 
-    const { email, username, password } = req.body;
+    const { username, email, password } = req.body;
 
     try {
-        // Check if user already exists
-        const [existingUser] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
-        if (existingUser.length > 0) {
-            return errorResponse(res, 'User already exists');
-        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await insertUser(username, email, hashedPassword, 'not_verified');
 
-        // Generate a verification token
-        const emailStatus = 'not_verified';
-        const token = crypto.randomBytes(4).toString('hex');
+        const token = generateToken({ username, email });
+        await insertVerificationToken(username, email, token);
 
-        // Hash the password and save user
-        const hashedPassword = await hashPassword(password);
-        await db.query('INSERT INTO users (username, email, password, email_status) VALUES (?, ?, ?, ?)', [
-            username,
-            email,
-            hashedPassword,
-            emailStatus,
-        ]);
-
-        // Save token for email verification
-        await db.query('INSERT INTO email_verifications (username, email, token) VALUES (?, ?, ?)', [
-            username,
-            email,
-            token,
-        ]);
-
-        // Retrieve the user's ID
-        const [user] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
-        const userId = user[0].id;
+        const userId = await getUserIdByEmail(email);
 
         // Prepare the email content
         const verificationLink = `http://localhost:3000/verify`;
@@ -138,7 +121,7 @@ export const signUp = async (req, res) => {
         // Respond to the user
         return successResponse(res, 'Check your email for the verification token');
     } catch (err) {
-        console.error('Error during sign-up:', err);
+        // console.error('Error during sign-up:', err);
         return errorResponse(res, 'An error occurred during sign-up', 500);
     }
 };
