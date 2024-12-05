@@ -49,11 +49,11 @@ export const addEmployer = (req, res) => {
 
 export const postEmployer = (req, res) => {
     var { 
-        first_name, last_name, email, dob, gender, address, phone, filename, department, biography 
+        name, email, phone, join_date, role, salary, department
     } = req.body;
 
     var add_doctor = post(
-        first_name, last_name, email, dob, gender, address, phone, filename, department, biography 
+        name, email, phone, join_date, role, salary, department
     )
     if (add_doctor) {
         console.log("1 doctor added successfuly!");
@@ -73,10 +73,10 @@ export const editEmployer = (req, res) => {
 export const updateEmployer = (req, res) => {
     var id = req.params.id;
     var { 
-        id, first_name, last_name, email, dob, gender, address, phone, department, biography 
+        id, name, email, phone, join_date, role, salary, department
     } = req.body;
 
-    update(id, first_name, last_name, email, dob, gender, address, phone, department, biography, function(err, result) {
+    update(id, name, email, phone, join_date, role, salary, department, function(err, result) {
         if (err) throw err;
         res.redirect('/employer/list.ejs', {list: result});
     })
