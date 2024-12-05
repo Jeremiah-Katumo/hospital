@@ -48,19 +48,11 @@ export const addDoctor = (req, res) => {
 }
 
 export const postDoctor = (req, res) => {
-    var { 
-        first_name, last_name, email, dob, gender, address, phone, filename, department, biography 
-    } = req.body;
+    const { first_name, last_name, email, phone, dob, gender, address, department, biography } = req.body;
 
-    var add_doctor = post(
-        first_name, last_name, email, dob, gender, address, phone, filename, department, biography 
-    )
-    if (add_doctor) {
-        console.log("1 doctor added successfuly!");
-    }
-
-    res.render('/doctor/list.ejs');
-}
+    post(first_name, last_name, email, phone, dob, gender, address, department, biography );
+    res.send('Doctor added successfuly!');
+};
 
 export const editDoctor = (req, res) => {
     var id = req.params.id;
@@ -76,10 +68,8 @@ export const updateDoctor = (req, res) => {
         id, first_name, last_name, email, dob, gender, address, phone, department, biography 
     } = req.body;
 
-    update(id, first_name, last_name, email, dob, gender, address, phone, department, biography, function(err, result) {
-        if (err) throw err;
-        res.redirect('/doctor/list.ejs', {list: result});
-    })
+    update(id, first_name, last_name, email, dob, gender, address, phone, department, biography );
+    res.send('Doctor updated successfuly!');
 }
 
 export const confirmDeleteDoctor = (req, res) => {

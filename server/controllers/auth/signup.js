@@ -79,7 +79,7 @@ export const signUp = async (req, res) => {
         await transporter.sendMail(mailOptions);
 
         // Respond with success
-        return successResponse(res, 'Sign-up successful! Check your email for verification details.');
+        return successResponse(res, 201, 'Sign-up successful! Check your email for verification details.');
     } catch (err) {
         console.error('Error during sign-up:', err.message);
         return errorResponse(res, 'An error occurred during sign-up', 500);

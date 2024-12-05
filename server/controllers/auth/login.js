@@ -34,10 +34,10 @@ export const logIn = async (req, res) => {
             if (user[0].email_status === 'not_verified') {
                 return errorResponse(res, 'Please verify your email!');
             } else {
-                return successResponse(res, 'Logged In', { redirect: '/home', token });
+                return successResponse(res, 200, 'Logged In', { redirect: '/home', token });
             }
         } else {
-            return errorResponse(res, 'Incorrect user credentials!');
+            return errorResponse(res, 'Incorrect user credentials!', 403);
         }
     } catch (error) {
         return errorResponse(res, 'An error occurred during login', 500);

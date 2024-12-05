@@ -59,8 +59,7 @@ export const signup = async (username, email, password, status) => {
     );
 
     if (existingUser.length === 0) {
-      const query =
-        'INSERT INTO users (username, email, password, email_status) VALUES (?, ?, ?, ?)';
+      const query = 'INSERT INTO users (username, email, password, email_status) VALUES (?, ?, ?, ?)';
       await promiseConn.query(query, [username, email, password, status]);
       console.log('User signed up successfully');
     } else {
