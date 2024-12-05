@@ -1,5 +1,6 @@
 import { validationResult } from 'express-validator';
 import { successResponse, errorResponse } from '../../helpers/responseHelper.js';
+import { generateToken } from '../../helpers/jwtHelper.js';
 import {
     findUserByUsername,
 } from '../../services/authService.js';

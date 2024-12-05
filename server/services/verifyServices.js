@@ -1,13 +1,14 @@
-import { conn } from "../database/dbConnection.js";
+import db, { conn } from "../database/dbConnection.js";
+
 
 // export const verify = function (username, email, token, callback) {
 //     var query = "INSERT INTO `verify`(`username`,`email`,`token`) VALUES('"+username+"', '"+email+"', '"+token+"')";
-//     conn.query(query, callback);
+//     db.query(query, callback);
 // }
 
 // export const getuserid = function (email, callback) {
 //     var query = "SELECT * from verify WHERE email = '"+email+"' ";
-//     conn.query(query, callback);
+//     db.query(query, callback);
 // }
 
 export const matchToken = function (id, token, callback) {

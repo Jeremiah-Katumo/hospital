@@ -21,14 +21,14 @@ doctorRouter.use(session({
 }))
 
 doctorRouter.get('*', getDoctor)
-    .get('/', getDoctorList)
-    .get('/:id', getDoctorById)
-    .get('/add_doctor', addDoctor)
-    .post('/save_doctor', upload.single("image"), postDoctor)
-    .get('/edit_doctor/:id', editDoctor)
-    .post('/update_doctor/:id', updateDoctor)
-    .get('/delete_doctor/:id', confirmDeleteDoctor)
-    .post('/delete_doctor/:id', deleteDoctor)
-    .get('/search_doctor', searchDoctor)
+    .get('/doctors', getDoctorList)
+    .get('/doctors/:id', getDoctorById)
+    .get('/doctors/add', addDoctor)
+    .post('/doctors/save', upload.single("image"), postDoctor)
+    .get('/doctors/edit/:id', editDoctor)
+    .post('/doctors/update/:id', updateDoctor)
+    .get('/doctors/delete/:id', confirmDeleteDoctor)
+    .post('/doctors/delete/:id', deleteDoctor)
+    .get('/doctors/search', searchDoctor);
 
 export default doctorRouter;

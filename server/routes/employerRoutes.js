@@ -14,7 +14,7 @@ import {
     upload } from "../controllers/Employer.js";
 
 
-employerRouter = express.Router();
+var employerRouter = express.Router();
 
 employerRouter.use(session({
     secret: 'secret',
@@ -23,14 +23,14 @@ employerRouter.use(session({
 }))
 
 employerRouter.get('*', getEmployer)
-    .get('/', getEmployerList)
-    .get('/:id', getEmployerById)
-    .get('/add_employer', addEmployer)
-    .post('/save_employer', upload.single("image"), postEmployer)
-    .get('/edit_employer/:id', editEmployer)
-    .post('/update_employer/:id', updateEmployer)
-    .get('/delete_employer/:id', confirmDeleteEmployer)
-    .post('/delete_employer/:id', deleteEmployer)
-    .get('/search_employer', searchEmployer)
+    .get('/employers', getEmployerList)
+    .get('/employers/:id', getEmployerById)
+    .get('/employers/add', addEmployer)
+    .post('/employers/save', upload.single("image"), postEmployer)
+    .get('/employers/edit/:id', editEmployer)
+    .post('/employers/update/:id', updateEmployer)
+    .get('/employers/delete/:id', confirmDeleteEmployer)
+    .post('/employers/delete/:id', deleteEmployer)
+    .get('/employers/search', searchEmployer);
 
 export default employerRouter;

@@ -7,6 +7,6 @@ export const useSignUpValidator = [
 ];
 
 export const useLogInValidator = [
-    check('email').isEmail().notEmpty().withMessage('Email is required and must be valid!'),
+    check('username').notEmpty().withMessage('Username is required!'),
     check('password').isLength({ min: 8}).withMessage('Password must be 8 at least 8 characters long!')
 ];

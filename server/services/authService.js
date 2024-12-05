@@ -1,36 +1,73 @@
-import db, { conn } from '../database/dbConnection.js';
+import db, { promiseConn } from '../database/dbConnection.js';
+
 
 export const findUserByUsername = async (username) => {
-  const [results] = await conn.query('SELECT * FROM users WHERE username = ?', [username]);
-  return results;
+  try {
+    const [results] = await promiseConn.query(
+      'SELECT * FROM users WHERE username = ?',
+      [username]
+    );
+    return results;
+  } catch (error) {
+    console.error('Error finding user by username:', error.message);
+    throw error;
+  }
 };
 
 export const insertUser = async (username, email, hashedPassword, emailStatus) => {
-  await conn.query(
-    'INSERT INTO users (username, email, password, email_status) VALUES (?, ?, ?, ?)',
-    [username, email, hashedPassword, emailStatus]
-  );
+  try {
+    await promiseConn.query(
+      'INSERT INTO users (username, email, password, email_status) VALUES (?, ?, ?, ?)',
+      [username, email, hashedPassword, emailStatus]
+    );
+  } catch (error) {
+    console.error('Error inserting user:', error.message);
+    throw error;
+  }
 };
 
 export const insertVerificationToken = async (username, email, token) => {
-  await conn.query(
-    'INSERT INTO email_verifications (username, email, token) VALUES (?, ?, ?)',
-    [username, email, token]
-  );
+  try {
+    await promiseConn.query(
+      'INSERT INTO verify (username, email, token) VALUES (?, ?, ?)',
+      [username, email, token]
+    );
+  } catch (error) {
+    console.error('Error inserting verification token:', error.message);
+    throw error;
+  }
 };
 
 export const getUserIdByEmail = async (email) => {
-  const [results] = await conn.query('SELECT id FROM users WHERE email = ?', [email]);
-  return results[0];
+  try {
+    const [results] = await promiseConn.query(
+      'SELECT id FROM users WHERE email = ?',
+      [email]
+    );
+    return results[0];
+  } catch (error) {
+    console.error('Error getting user ID by email:', error.message);
+    throw error;
+  }
 };
 
-export const signup = async (username, email, password, status, callback) => {
-  conn.query('SELECT email from users WHERE email = "'+email+'" ', function(err, result) {
-      if (result[0] == undefined) {
-          var query = "INSERT INTO `users`(`username`,`email`,`password`,'email_status`) VALUES('"+username+"','"+email+"','"+password+"','"+status+"')";
-          console.log(query);
-      } else {
-          console.log("Error:", err.message);
-      }  
-  })
-}
+export const signup = async (username, email, password, status) => {
+  try {
+    const [existingUser] = await promiseConn.query(
+      'SELECT email FROM users WHERE email = ?',
+      [email]
+    );
+
+    if (existingUser.length === 0) {
+      const query =
+        'INSERT INTO users (username, email, password, email_status) VALUES (?, ?, ?, ?)';
+      await promiseConn.query(query, [username, email, password, status]);
+      console.log('User signed up successfully');
+    } else {
+      console.error('Error: Email already exists');
+    }
+  } catch (error) {
+    console.error('Error during signup:', error.message);
+    throw error;
+  }
+};

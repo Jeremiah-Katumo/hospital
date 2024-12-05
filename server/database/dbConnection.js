@@ -14,22 +14,19 @@ export const conn = mysql.createPool({
     connectionLimit: 10,
 });
 
-const db = async () => {
-    conn.getConnection(function(connection) {
-        try {
-            console.log('Database connected successfuly!');
-            // connection.release();
-        } catch (error) {
-            console.error('Error connecting to MySQL:', error.message);
-        }
+export const promiseConn = conn.promise(); // Create a promise-based pool connection
 
-        // if (err) {
-        //     console.error('Error connecting to MySQL:', err.message);
-        // } else {
-        //     console.log('Database connected successfuly!');
-        //     connection.release();
-        // }
-    });
-}
+const db = async () => {
+    try {
+        // Use promise-based connection pool
+        const promisePool = conn.promise();
+
+        // Test connection
+        await promisePool.getConnection();
+        console.log('Database connected successfully!');
+    } catch (error) {
+        console.error('Error connecting to MySQL:', error.message);
+    }
+};
 
 export default db;

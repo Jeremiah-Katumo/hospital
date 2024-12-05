@@ -1,4 +1,4 @@
-import { conn } from "../database/dbConnection.js";
+import db, { conn } from "../database/dbConnection.js";
 
 export const findOne = (email, callback) => {
     var query = "SELECT * FROM users where email = '"+email+"' ";
