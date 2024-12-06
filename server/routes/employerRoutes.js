@@ -11,7 +11,8 @@ import {
     postEmployer, 
     searchEmployer, 
     updateEmployer, 
-    upload } from "../controllers/Employer.js";
+    upload,
+} from "../controllers/Employer.js";
 
 
 var employerRouter = express.Router();

@@ -20,6 +20,7 @@ export const post = (
         VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
     const params = [first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth];
+
     conn.query(query, params, (err, result) => {
         if (err) {
             console.log('Database error', err);
@@ -39,7 +40,7 @@ export const update = (
             diagnosis = ?, location = ?, date_of_birth = ?
         WHERE id = ?
     `;
-    const params = [first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth];
+    const params = [first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth, id];
 
     conn.query(query, params, (err, result) => {
         if (err) {

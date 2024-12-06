@@ -1,7 +1,14 @@
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
-import { getAll, getOne, post, search, trash, update } from '../services/doctorServices.js';
+import {
+    getAll,
+    getOne,
+    post,
+    search,
+    trash,
+    update,
+} from '../services/employerServices.js';
 
 
 export const getEmployer = (req, res, next) => {
@@ -14,19 +21,19 @@ export const getEmployer = (req, res, next) => {
 
 export const getEmployerById = (req, res) => {
     var id = req.params.id;
-    getOne(id, function(err, result) {
+    getOne(id, function (err, result) {
         if (err) {
             return res.status(500).json({ error: 'An error occurred while fetching doctor' });
         }
-        res.render('employer/view.ejs', {list: result});
+        res.render('employer/view.ejs', { list: result });
     })
 }
 
 var storage = multer.diskStorage({
-    destination: function(req, file, callback) {
+    destination: function (req, file, callback) {
         callback(null, "public/assets/images/upload_images");
     },
-    filename: function(req, file, callback) {
+    filename: function (req, file, callback) {
         console.log(file);
         callback(null, file.originalname);
     }
@@ -35,17 +42,17 @@ var storage = multer.diskStorage({
 export var upload = multer({ storage: storage });
 
 export const getEmployerList = (req, res) => {
-    getAll(function(err, result) {
+    getAll(function (err, result) {
         if (err) {
             return res.status(500).json({ error: 'An error occurred while fetching doctors' });
         }
-        res.render('employer/list.ejs', {list: result});
+        res.render('employer/list.ejs', { list: result });
     })
 }
 
 export const addEmployer = (req, res) => {
     // if (err) throw err;
-    res.render('employer/add.ejs', {list: result});
+    res.render('employer/add.ejs', { list: result });
 }
 
 export const postEmployer = (req, res) => {
@@ -62,7 +69,7 @@ export const postEmployer = (req, res) => {
 export const editEmployer = (req, res) => {
     var id = req.params.id;
 
-    getOne(id, function(err, result) {
+    getOne(id, function (err, result) {
         if (err) {
             return res.status(500).json({ error: 'An error occurred while fetching the employer' });
         }
@@ -74,7 +81,7 @@ export const updateEmployer = (req, res) => {
     // var id = req.params.id;
     var { id, name, email, phone, join_date, role, salary, department } = req.body;
 
-    update(id, name, email, phone, join_date, role, salary, department, function(err, result) {
+    update(id, name, email, phone, join_date, role, salary, department, function (err, result) {
         if (err) {
             return res.status(500).json({ error: 'An error occurred while updating the employer' });
         }
@@ -106,10 +113,10 @@ export const deleteEmployer = (req, res) => {
 export const searchEmployer = (req, res) => {
     var key = req.body.search;
 
-    search(key, function(err, result) {
+    search(key, function (err, result) {
         if (err) {
-            return res.status(500).json({ error: 'An error occurred while deleting the employer' });
+            return res.status(500).json({ error: 'An error occurred while searching the employer' });
         }
-        res.render('/employer/list.ejs', {list: result});
+        res.render('/employer/list.ejs', { list: result });
     })
 }

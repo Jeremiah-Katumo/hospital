@@ -1,108 +1,84 @@
-import multer from 'multer';
-import fs from 'fs';
-import path from 'path';
-import { getAll, getOne, post, update, search, trash } from '../services/doctorServices.js';
-
-
-export const getDoctor = (req, res, next) => {
-    const username = req.cookies.username;
-    if (!username) {
-        return res.redirect('/login');
+export class DoctorController {
+    constructor(doctorService) {
+        this.doctorService = doctorService;
     }
-    next();
-}
 
-var storage = multer.diskStorage({
-    destination: function(req, file, callback) {
-        callback(null, "public/assets/images/upload_images");
-    },
-    filename: function(req, file, callback) {
-        console.log(file);
-        callback(null, file.originalname);
+    async getDoctorList(req, res) {
+        try {
+            const doctors = await this.doctorService.getAll();
+            res.render('doctor/list.ejs', { list: doctors });
+        } catch (err) {
+            res.status(500).json({ error: 'Error fetching doctors: ' + err.message });
+        }
     }
-})
 
-export var upload = multer({ storage: storage });
-
-export const getDoctorById = (req, res) => {
-    const id = req.params.id;
-    getOne(id, (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while fetching the doctor' });
+    async getDoctorById(req, res) {
+        try {
+            const id = req.params.id;
+            const doctor = await this.doctorService.getOne(id);
+            res.render('doctor/view.ejs', { list: doctor });
+        } catch (err) {
+            res.status(500).json({ error: 'Error fetching doctor: ' + err.message });
         }
-        res.render('doctor/view.ejs', { list: result });
-    });
-}
+    }
 
-export const getDoctorList = (req, res) => {
-    getAll((err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while fetching doctors' });
+    async addDoctor(req, res) {
+        res.render('doctor/add.ejs');
+    }
+
+    async postDoctor(req, res) {
+        try {
+            await this.doctorService.post(req.body);
+            res.redirect('/doctors');
+        } catch (err) {
+            res.status(500).json({ error: 'Error adding doctor: ' + err.message });
         }
-        res.render('doctor/list.ejs', { list: result });
-    });
-}
+    }
 
-export const addDoctor = (req, res) => {
-    res.render('doctor/add.ejs');
-}
-
-export const postDoctor = (req, res) => {
-    const { first_name, last_name, email, phone, dob, gender, address, department, biography } = req.body;
-    post(first_name, last_name, email, phone, dob, gender, address, department, biography, (err) => {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while adding the doctor' });
+    async editDoctor(req, res) {
+        try {
+            const id = req.params.id;
+            const doctor = await this.doctorService.getOne(id);
+            res.render('doctor/edit.ejs', { list: doctor });
+        } catch (err) {
+            res.status(500).json({ error: 'Error fetching doctor: ' + err.message });
         }
-        res.status(200).json({ message: 'Doctor added successfully!' });
-    });
-};
+    }
 
-export const editDoctor = (req, res) => {
-    const id = req.params.id;
-    getOne(id, (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while fetching the doctor' });
+    async updateDoctor(req, res) {
+        try {
+            await this.doctorService.update({ ...req.body, id: req.params.id });
+            res.redirect('/doctors');
+        } catch (err) {
+            res.status(500).json({ error: 'Error updating doctor: ' + err.message });
         }
-        res.render('doctor/edit.ejs', { list: result });
-    });
-}
+    }
 
-export const updateDoctor = (req, res) => {
-    const { id, first_name, last_name, email, dob, gender, address, phone, department, biography } = req.body;
-    update(id, first_name, last_name, email, dob, gender, address, phone, department, biography, (err) => {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while updating the doctor' });
+    async confirmDeleteDoctor(req, res) {
+        try {
+            const id = req.params.id;
+            const doctor = await this.doctorService.getOne(id);
+            res.render('templates/confirm_delete.ejs', { doctor });
+        } catch (err) {
+            res.status(500).json({ error: 'Error fetching doctor: ' + err.message });
         }
-        res.status(200).json({ message: 'Doctor updated successfully!' });
-    });
-}
+    }
 
-export const confirmDeleteDoctor = (req, res) => {
-    const id = req.params.id;
-    getOne(id, (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while fetching the doctor' });
+    async deleteDoctor(req, res) {
+        try {
+            await this.doctorService.delete(req.params.id);
+            res.redirect('/doctors');
+        } catch (err) {
+            res.status(500).json({ error: 'Error deleting doctor: ' + err.message });
         }
-        res.render('templates/confirm_delete.ejs');
-    });
-}
+    }
 
-export const deleteDoctor = (req, res) => {
-    const id = req.params.id;
-    trash(id, (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while deleting the doctor' });
+    async searchDoctor(req, res) {
+        try {
+            const doctors = await this.doctorService.search(req.query.search);
+            res.render('doctor/list.ejs', { list: doctors });
+        } catch (err) {
+            res.status(500).json({ error: 'Error searching for doctors: ' + err.message });
         }
-        res.redirect('/doctor/list');
-    });
-}
-
-export const searchDoctor = (req, res) => {
-    const key = req.body.search;
-    search(key, (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while searching for doctors' });
-        }
-        res.render('doctor/list.ejs', { list: result });
-    });
+    }
 }

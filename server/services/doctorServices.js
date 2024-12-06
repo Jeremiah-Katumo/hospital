@@ -1,71 +1,95 @@
-import db, { conn } from "../database/dbConnection.js";
+export class DoctorService {
+    constructor(promiseConn) {
+        this.promiseConn = promiseConn;
+    }
 
-
-export const getAll = async (callback) => {
-    var query = "SELECT * FROM doctor LIMIT 10";
-    conn.query(query, callback);
-    console.log(query);
-}
-
-export const getOne = async (id, callback) => {
-    var query = "SELECT * FROM doctor WHERE id = "+id;
-    conn.query(query, callback);
-    console.log(query);
-}
-
-export const post = async (
-    first_name, last_name, email, phone, dob, gender, address, department, biography
-) => {
-    const query = `
-        INSERT INTO doctor (first_name, last_name, email, phone, dob, gender, address, department, biography) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-    const params = [first_name, last_name, email, phone, dob, gender, address, department, biography];
-
-    conn.query(query, params, (err, result) => {
-        if (err) {
-            console.error('Database error:', err);
-            // return res.status(500).json({success: true, message: 'An error occurred while adding the doctor.'});
+    async getAll() {
+        const query = 'SELECT * FROM doctor LIMIT 10';
+        try {
+            const [rows] = await this.promiseConn.query(query);
+            return rows;
+        } catch (err) {
+            throw new Error('Database error: ' + err.message);
         }
-        // return res.status(201).json({success: true, message: 'Doctor added successfuly!'});
-    });
+    }
 
-    console.log(query);
-}
-
-export const update = async (
-    id, first_name, last_name, email, phone, dob, gender, address, department, biography
-) => {
-    // const formattedDob = new Date(dob).toISOString().split('T')[0];  // if dob is a date string, this will format it correctly
-
-    var query = `
-        UPDATE doctor 
-        SET 
-            first_name = ?, last_name = ?, email = ?, gender = ?, dob = ?, 
-            phone = ?, address = ?, department = ?, biography = ? 
-        WHERE id = ?
-    `;
-    var params = [first_name, last_name, email, gender, dob, phone, address, department, biography, id];
-
-    conn.query(query, params, (err, result) => {
-        if (err) {
-            console.error('Database error:', err);
-        } else {
-            console.log('Update successful:', result);
+    async getOne(id) {
+        const query = 'SELECT * FROM doctor WHERE id = ?';
+        try {
+            const [rows] = await this.promiseConn.query(query, [id]);
+            return rows[0];
+        } catch (err) {
+            throw new Error('Database error: ' + err.message);
         }
-    });
+    }
 
-    console.log(query);  // For debugging: Check the final query and parameters
-}
+    async post(doctor) {
+        const query = `
+            INSERT INTO doctor (first_name, last_name, email, phone, dob, gender, address, department, biography) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+        const params = [
+            doctor.first_name,
+            doctor.last_name,
+            doctor.email,
+            doctor.phone,
+            doctor.dob,
+            doctor.gender,
+            doctor.address,
+            doctor.department_id,
+            doctor.biography,
+        ];
+        try {
+            const [result] = await this.promiseConn.query(query, params);
+            return result;
+        } catch (err) {
+            throw new Error('Database error: ' + err.message);
+        }
+    }
 
+    async update(doctor) {
+        const query = `
+            UPDATE doctor 
+            SET first_name = ?, last_name = ?, email = ?, phone = ?, dob = ?, gender = ?, address = ?, department = ?, biography = ? 
+            WHERE id = ?
+        `;
+        const params = [
+            doctor.first_name,
+            doctor.last_name,
+            doctor.email,
+            doctor.phone,
+            doctor.dob,
+            doctor.gender,
+            doctor.address,
+            doctor.department_id,
+            doctor.biography,
+            doctor.id,
+        ];
+        try {
+            const [result] = await this.promiseConn.query(query, params);
+            return result;
+        } catch (err) {
+            throw new Error('Database error: ' + err.message);
+        }
+    }
 
-export const search = async (id,callback) => {
-    var query = "SELECT * FROM doctor WHERE first_name LIKE "%'+key+'%"'";
-    conn.query(query, callback);
-    console.log(query);
-}
+    async delete(id) {
+        const query = 'DELETE FROM doctor WHERE id = ?';
+        try {
+            const [result] = await this.promiseConn.query(query, [id]);
+            return result;
+        } catch (err) {
+            throw new Error('Database error: ' + err.message);
+        }
+    }
 
-export const trash = async (id, callback) => {
-    var query = "DELETE FROM doctor WHERE id = "+id;
-    conn.query(query, callback);
+    async search(key) {
+        const query = 'SELECT * FROM doctor WHERE first_name LIKE ?';
+        try {
+            const [rows] = await this.promiseConn.query(query, [`%${key}%`]);
+            return rows;
+        } catch (err) {
+            throw new Error('Database error: ' + err.message);
+        }
+    }
 }
