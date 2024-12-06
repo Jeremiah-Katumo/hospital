@@ -8,7 +8,7 @@ import {
     insertUser,
     insertVerificationToken,
     getUserIdByEmail,
-} from '../../services/authService.js';
+} from '../../services/authServices.js';
 
 
 dotenv.config();

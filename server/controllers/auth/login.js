@@ -3,7 +3,7 @@ import { successResponse, errorResponse } from '../../helpers/responseHelper.js'
 import { generateToken } from '../../helpers/jwtHelper.js';
 import {
     findUserByUsername,
-} from '../../services/authService.js';
+} from '../../services/authServices.js';
 
 
 export const logIn = async (req, res) => {

@@ -83,7 +83,7 @@ export const confirmDeleteDoctor = (req, res) => {
         if (err) {
             return res.status(500).json({ error: 'An error occurred while fetching the doctor' });
         }
-        res.render('doctor/delete.ejs', { list: result });
+        res.render('templates/confirm_delete.ejs');
     });
 }
 
