@@ -23,7 +23,7 @@ var storage = multer.diskStorage({
 })
 
 export var upload = multer({ storage: storage });
-
+ 
 export const getDoctorById = (req, res) => {
     const id = req.params.id;
     getOne(id, (err, result) => {
