@@ -7,8 +7,7 @@ const doctorController = new DoctorController(doctorService);
 
 const doctorRouter = express.Router();
 
-doctorRouter
-    .get('/doctors', (req, res) => doctorController.getDoctorList(req, res))
+doctorRouter.get('/doctors', (req, res) => doctorController.getDoctorList(req, res))
     .get('/doctors/:id', (req, res) => doctorController.getDoctorById(req, res))
     .get('/doctors/add', (req, res) => doctorController.addDoctor(req, res))
     .post('/doctors/save', (req, res) => doctorController.postDoctor(req, res))
