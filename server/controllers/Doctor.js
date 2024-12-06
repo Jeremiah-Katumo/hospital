@@ -5,20 +5,11 @@ import { getAll, getOne, post, update, search, trash } from '../services/doctorS
 
 
 export const getDoctor = (req, res, next) => {
-    if (req.cookies[username] === null) {
-        res.redirect('/login');
-    } else {
-        next();
+    const username = req.cookies.username;
+    if (!username) {
+        return res.redirect('/login');
     }
-}
-
-export const getDoctorById = (req, res) => {
-    var id = req.params.id;
-    getOne(id, function(err, result) {
-        if (err) throw err;
-
-        res.render('doctor/view.ejs', {list: result});
-    })
+    next();
 }
 
 var storage = multer.diskStorage({
@@ -33,66 +24,85 @@ var storage = multer.diskStorage({
 
 export var upload = multer({ storage: storage });
 
-export const getDoctorList = (req, res) => {
-    getAll(function(err, result) {
-        if (err) throw err;
+export const getDoctorById = (req, res) => {
+    const id = req.params.id;
+    getOne(id, (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'An error occurred while fetching the doctor' });
+        }
+        res.render('doctor/view.ejs', { list: result });
+    });
+}
 
-        res.render('doctor/list.ejs', {list: result});
-    })
+export const getDoctorList = (req, res) => {
+    getAll((err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'An error occurred while fetching doctors' });
+        }
+        res.render('doctor/list.ejs', { list: result });
+    });
 }
 
 export const addDoctor = (req, res) => {
-    if (err) throw err;
-
-    res.render('doctor/add.ejs', {list: result});
+    res.render('doctor/add.ejs');
 }
 
 export const postDoctor = (req, res) => {
     const { first_name, last_name, email, phone, dob, gender, address, department, biography } = req.body;
-
-    post(first_name, last_name, email, phone, dob, gender, address, department, biography );
-    res.send('Doctor added successfuly!');
+    post(first_name, last_name, email, phone, dob, gender, address, department, biography, (err) => {
+        if (err) {
+            return res.status(500).json({ error: 'An error occurred while adding the doctor' });
+        }
+        res.status(200).json({ message: 'Doctor added successfully!' });
+    });
 };
 
 export const editDoctor = (req, res) => {
-    var id = req.params.id;
-
-    getOne(id, function(err, result) {
-        res.render('/doctor/edit.ejs', {list: result});
-    })
+    const id = req.params.id;
+    getOne(id, (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'An error occurred while fetching the doctor' });
+        }
+        res.render('doctor/edit.ejs', { list: result });
+    });
 }
 
 export const updateDoctor = (req, res) => {
-    var id = req.params.id;
-    var { 
-        id, first_name, last_name, email, dob, gender, address, phone, department, biography 
-    } = req.body;
-
-    update(id, first_name, last_name, email, dob, gender, address, phone, department, biography );
-    res.send('Doctor updated successfuly!');
+    const { id, first_name, last_name, email, dob, gender, address, phone, department, biography } = req.body;
+    update(id, first_name, last_name, email, dob, gender, address, phone, department, biography, (err) => {
+        if (err) {
+            return res.status(500).json({ error: 'An error occurred while updating the doctor' });
+        }
+        res.status(200).json({ message: 'Doctor updated successfully!' });
+    });
 }
 
 export const confirmDeleteDoctor = (req, res) => {
-    var id = req.params.id;
-
-    getOne(id, function(err, result) {
-        res.render('/doctor/delete.ejs', {list: result});
-    })
+    const id = req.params.id;
+    getOne(id, (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'An error occurred while fetching the doctor' });
+        }
+        res.render('doctor/delete.ejs', { list: result });
+    });
 }
 
 export const deleteDoctor = (req, res) => {
-    var id = req.params.id;
-
-    trash(id, function(err, result) {
-        res.render('/doctor/list.ejs', {list: result});
-    })
+    const id = req.params.id;
+    trash(id, (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'An error occurred while deleting the doctor' });
+        }
+        res.redirect('/doctor/list');
+    });
 }
 
 export const searchDoctor = (req, res) => {
-    var key = req.body.search;
-
-    search(key, function(err, result) {
-        console.log(result);
-        res.render('/doctor/list.ejs', {list: result});
-    })
+    const key = req.body.search;
+    search(key, (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'An error occurred while searching for doctors' });
+        }
+        res.render('doctor/list.ejs', { list: result });
+    });
 }

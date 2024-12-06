@@ -16,21 +16,44 @@ export const getOne = async (id, callback) => {
 export const post = async (
     name, email, phone, join_date, role, salary, department
 ) => {
-    var query = "INSERT INTO `employer`(`name`,`email`,`join_date`,`role`,`salary`,`phone`,`department`) ";
-    var query =+ "VALUES('"+name+"','"+email+"','"+join_date+"','"+role+"','"+salary+"','"+phone+"','"+department+"')";
+    var query = `
+        INSERT INTO employer (name,email,join_date,role,salary,phone,department) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    const params = [name, email, phone, join_date, role, salary, department];
 
-    db.query(query, callback);
-    console.log(query)
+    conn.query(query, params, (err, result) => {
+        if (err) {
+            console.error('Database error:', err);
+            // return res.status(500).json({success: true, message: 'An error occurred while adding the doctor.'});
+        }
+        // return res.status(201).json({success: true, message: 'Doctor added successfuly!'});
+    });
+
+    console.log(query);
 }
 
 export const update = async (
     id, name, email, phone, join_date, role, salary, department
 ) => {
-    var query = "UPDATE `employer` SET `id` = '"+id+"',`name` = '"+name+"',`join_date` = '"+join_date+"', `phone` = '"+phone+"' ";
-    var query =+ " `email` = '"+email+"', `role` = '"+role+"', `salary` = '"+salary+"', `department` = '"+department+"' ";
+    var query = `
+        UPDATE doctor 
+        SET 
+            name = ?, email = ?, phone = ?, join_date = ?, role = ?, 
+            salary = ?,, department = ? 
+        WHERE id = ?
+    `;
+    var params = [name, email, phone, join_date, role, salary, department, id];
 
-    db.query(query, callback)
-    console.log(query)
+    conn.query(query, params, (err, result) => {
+        if (err) {
+            console.error('Database error:', err);
+        } else {
+            console.log('Update successful:', result);
+        }
+    });
+
+    console.log(query);
 }
 
 export const search = async (id,callback) => {
