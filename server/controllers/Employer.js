@@ -1,122 +1,84 @@
-import multer from 'multer';
-import fs from 'fs';
-import path from 'path';
-import {
-    getAll,
-    getOne,
-    post,
-    search,
-    trash,
-    update,
-} from '../services/employerServices.js';
-
-
-export const getEmployer = (req, res, next) => {
-    const username = req.cookies.username;
-    if (!username) {
-        return res.redirect('/login');
+export class EmployerController {
+    constructor(employerService) {
+        this.employerService = employerService;
     }
-    next();
-}
 
-export const getEmployerById = (req, res) => {
-    var id = req.params.id;
-    getOne(id, function (err, result) {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while fetching doctor' });
+    async getEmployerList(req, res) {
+        try {
+            const employers = await this.employerService.getAll();
+            res.render('employer/list.ejs', { list: employers });
+        } catch (err) {
+            res.status(500).json({ error: 'Error fetching employer: '+err.message });
         }
-        res.render('employer/view.ejs', { list: result });
-    })
-}
-
-var storage = multer.diskStorage({
-    destination: function (req, file, callback) {
-        callback(null, "public/assets/images/upload_images");
-    },
-    filename: function (req, file, callback) {
-        console.log(file);
-        callback(null, file.originalname);
     }
-})
 
-export var upload = multer({ storage: storage });
-
-export const getEmployerList = (req, res) => {
-    getAll(function (err, result) {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while fetching doctors' });
+    async getEmployerById(req, res) {
+        try {
+            const id = req.params.id;
+            const employer = await this.employerService.getOne(id);
+            res.render('employer/view.ejs', { list: employer });
+        } catch (err) {
+            res.status(500).json({ error: 'Error fetching employer: '+err.message });
         }
-        res.render('employer/list.ejs', { list: result });
-    })
-}
+    }
 
-export const addEmployer = (req, res) => {
-    // if (err) throw err;
-    res.render('employer/add.ejs', { list: result });
-}
+    async addEmployer(req, res) {
+        res.render('employer/add.ejs');
+    }
 
-export const postEmployer = (req, res) => {
-    var { name, email, phone, join_date, role, salary, department } = req.body;
-
-    post(name, email, phone, join_date, role, salary, department, (err) => {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while adding the doctor' });
+    async postEmployer(req, res) {
+        try {
+            await this.employerService.post(req.body);
+            res.redirect('/employers');
+        } catch (err) {
+            res.status(500).json({ error: 'Error adding employer: '+err.message });
         }
-        res.status(200).json({ message: 'Doctor added successfully!' });
-    });
-}
+    }
 
-export const editEmployer = (req, res) => {
-    var id = req.params.id;
-
-    getOne(id, function (err, result) {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while fetching the employer' });
+    async editEmployer(req, res) {
+        try {
+            const id = req.params.id;
+            const employer = await this.employerService.getOne(id);
+            res.render('employer/edit.ejs', { list: employer });
+        } catch (err) {
+            res.status(500).json({ error: 'Error fetching employer: '+err.message});
         }
-        res.render('employer/edit.ejs', { list: result });
-    })
-}
+    }
 
-export const updateEmployer = (req, res) => {
-    // var id = req.params.id;
-    var { id, name, email, phone, join_date, role, salary, department } = req.body;
-
-    update(id, name, email, phone, join_date, role, salary, department, function (err, result) {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while updating the employer' });
+    async updateEmployer(req, res) {
+        try {
+            await this.employerService.update({ ...req.body, id: req.params.id });
+            res.redirect('/employers');
+        } catch (err) {
+            res.status(500).json({ error: 'Error updating employer: ' +err.message });
         }
-        res.status(200).json({ message: 'Employer updated successfully!' })
-    })
-}
+    }
 
-export const confirmDeleteEmployer = (req, res) => {
-    var id = req.params.id;
-
-    getOne(id, (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while fetching the employer' });
+    async confirmDeleteEmployer(req, res) {
+        try {
+            const id = req.params.id;
+            const employer = await this.employerService.getOne(id);
+            res.render('templates/confirm_delete.ejs', { employer });
+        } catch (err) {
+            res.status(500).json({ error: 'Error fetching employer: '+err.message});
         }
-        res.render('employer/delete.ejs', { list: result });
-    });
-}
+    }
 
-export const deleteEmployer = (req, res) => {
-    var id = req.params.id;
-    trash(id, (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while deleting the employer' });
+    async deleteEmployer(req, res) {
+        try {
+            await this.employerService.delete(req.params.id);
+            res.redirect('/employers');
+        } catch (err) {
+            res.status(500).json({ error: 'Error deleting employer: '+err.message });
         }
-        res.redirect('/employer/list');
-    });
-}
+    }
 
-export const searchEmployer = (req, res) => {
-    var key = req.body.search;
-
-    search(key, function (err, result) {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while searching the employer' });
+    async searchEmployer(req, res) {
+        try {
+            const employers = await this.employerService.search(req.query.search);
+            res.render('employer/list.ejs', { list: employers });
+        } catch (err) {
+            res.status(500).json({ error: 'Error searching for employers: ' +err.message });
         }
-        res.render('/employer/list.ejs', { list: result });
-    })
+    }
 }
