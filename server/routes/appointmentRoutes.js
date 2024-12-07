@@ -6,9 +6,9 @@ import { AppointmentController } from '../controllers/Appointment.js';
 const appointmentService = injector.get('AppointmentService');
 const appointmentController = new AppointmentController(appointmentService);
 
-employerRouter = express.Router();
+const appointmentRouter = express.Router()
 
-employerRouter.get('/appointments', (req, res) => appointmentController.getAppointmentList(req, res))
+appointmentRouter.get('/appointments', (req, res) => appointmentController.getAppointmentList(req, res))
     .get('/appointments/:id', (req, res) => appointmentController.getAppointmentById(req, res))
     .get('/appointments/add', (req, res) => appointmentController.addAppointment(req, res))
     .post('/appointments', (req, res) => appointmentController.postAppointment(req, res))
@@ -19,4 +19,4 @@ employerRouter.get('/appointments', (req, res) => appointmentController.getAppoi
     .get('/appointments/search/:id', (req, res) => appointmentController.searchAppointment(req, res));
 
 
-export default employerRouter;
+export default appointmentRouter;

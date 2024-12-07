@@ -54,7 +54,7 @@ export class DepartmentController {
         }
     }
 
-    async confirmDepartmentComplain(req, res) {
+    async confirmDeleteDepartment(req, res) {
         try {
             const id = req.params.id;
             const department = await this.departmentService.getOne(id);

@@ -6,7 +6,7 @@ import { DiagnosisController } from '../controllers/Diagnosis.js';
 const diagnosisService = injector.get('DiagnosisService');
 const diagnosistController = new DiagnosisController(diagnosisService);
 
-diagnosisRouter = express.Router();
+const diagnosisRouter = express.Router();
 
 diagnosisRouter.get('/departments', (req, res) => diagnosistController.getDiagnosisList(req, res))
     .get('/departments/:id', (req, res) => diagnosistController.getDiagnosisById(req, res))

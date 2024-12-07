@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-export default class AuthController {
+export class AuthController {
     constructor(authService) {
         this.authService = authService;
     }

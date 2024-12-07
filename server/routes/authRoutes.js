@@ -1,6 +1,6 @@
 import express from 'express';
 import injector from '../injectors/injector.js';
-import { AuthController } from '../controllers/AuthController.js';
+import { AuthController } from '../controllers/Auth.js';
 
 // Inject dependencies
 const authService = injector.get('AuthService');

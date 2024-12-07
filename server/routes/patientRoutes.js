@@ -1,7 +1,7 @@
 import express from 'express';
-import { PatientService } from './services/patientServices.js';
-import { PatientController } from './controllers/patientController.js';
-import { conn } from './dbConnection.js'; // Assuming dbConnection is your MySQL connection
+import { PatientService } from '../services/patientServices.js';
+import { PatientController } from '../controllers/Patient.js';
+import { conn } from '../database/dbConnection.js'; // Assuming dbConnection is your MySQL connection
 
 const patientRouter = express.Router();
 

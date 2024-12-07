@@ -6,7 +6,7 @@ import { EmployerController } from '../controllers/Employer.js';
 const employerService = injector.get('EmployerService');
 const employerController = new EmployerController(employerService);
 
-employerRouter = express.Router();
+const employerRouter = express.Router();
 
 employerRouter.get('/employers', (req, res) => employerController.getEmployerList(req, res))
     .get('/employers/:id', (req, res) => employerController.getEmployerById(req, res))

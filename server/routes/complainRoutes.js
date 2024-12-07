@@ -6,7 +6,7 @@ import { ComplainController } from '../controllers/Complain.js';
 const complainService = injector.get('ComplainService');
 const complainController = new ComplainController(complainService);
 
-complainRouter = express.Router();
+const complainRouter = express.Router();
 
 complainRouter.get('/complains', (req, res) => complainController.getComplainList(req, res))
     .get('/complains/:id', (req, res) => complainController.getComplainById(req, res))

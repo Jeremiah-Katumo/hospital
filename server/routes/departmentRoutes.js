@@ -6,9 +6,9 @@ import { DepartmentController } from '../controllers/Department.js';
 const departmentService = injector.get('DepartmentService');
 const departmentController = new DepartmentController(departmentService);
 
-complainRouter = express.Router();
+const departmentRouter = express.Router();
 
-complainRouter.get('/departments', (req, res) => departmentController.getDepartmentList(req, res))
+departmentRouter.get('/departments', (req, res) => departmentController.getDepartmentList(req, res))
     .get('/departments/:id', (req, res) => departmentController.getDepartmentById(req, res))
     .get('/departments/add', (req, res) => departmentController.addDepartment(req, res))
     .post('/departments', (req, res) => departmentController.postDepartment(req, res))
@@ -19,4 +19,4 @@ complainRouter.get('/departments', (req, res) => departmentController.getDepartm
     .get('/departments/search/:id', (req, res) => departmentController.searchDepartment(req, res));
 
 
-export default complainRouter;
+export default departmentRouter;
