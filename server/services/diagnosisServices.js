@@ -1,4 +1,4 @@
-export class DepartmentService {
+export class DiagnosisService {
     constructor(promiseConn) {
         this.promiseConn = promiseConn;
     }

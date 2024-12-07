@@ -3,7 +3,8 @@ import { DoctorService } from '../services/doctorServices.js';
 import { EmployerService } from '../services/employerServices.js';
 import { ComplainService } from '../services/complainServices.js';
 import { AppointmentService } from '../services/appointmentServices.js';
-import { DepartmentService } from '../services/appointmentServices.js';
+import { DepartmentService } from '../services/departmentServices.js';
+import { DiagnosisService } from '../services/diagnosisServices.js';
 
 
 const injector = {
@@ -13,6 +14,7 @@ const injector = {
         AppointMentService: new AppointmentService(promiseConn),
         ComplainService: new ComplainService(promiseConn),
         DepartmentService: new DepartmentService(promiseConn),
+        DiagnosisService: new DiagnosisService(promiseConn),
     },
     get(serviceName) {
         return this.services[serviceName];
