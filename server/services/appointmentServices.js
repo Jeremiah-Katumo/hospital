@@ -1,10 +1,10 @@
-export class EmployerService {
+export class AppointmentService {
     constructor(promiseConn) {
         this.promiseConn = promiseConn;
     }
 
     async getAll() {
-        const query = "SELECT * FROM employer LIMIT 10";
+        const query = "SELECT * FROM appointment LIMIT 10";
         try {
             const [rows] = await this.promiseConn.query(query);
             return rows;
@@ -14,7 +14,7 @@ export class EmployerService {
     }
 
     async getOne(id) {
-        const query = "SELECT * FROM employer WHERE id = "+id;
+        const query = "SELECT * FROM appointment WHERE id = "+id;
         
         try {
             const [rows] = await this.promiseConn.query(query, [id]);
@@ -24,19 +24,21 @@ export class EmployerService {
         }
     }
 
-    async post(employer) {
+    async post(appointment) {
         const query =  `
-            INSERT INTO employer (name,email,join_date,role,salary,phone,department) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO appointment 
+            (name,doctor_id,patient_id,department_id,appointment_date,appointment_time,patient_email,patient_phone) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
         const params = [
-            employer.name, 
-            employer.email, 
-            employer.phone, 
-            employer.join_date, 
-            employer.role, 
-            employer.salary, 
-            employer.department
+            appointment.name,
+            appointment.doctor_id, 
+            appointment.patient_id, 
+            appointment.department_id, 
+            appointment.appointment_date, 
+            appointment.appointment_time, 
+            appointment.patient_email,
+            appointment.patient_phone
         ];
 
         try {
@@ -47,23 +49,24 @@ export class EmployerService {
         }
     }
 
-    async update(employer) {
+    async update(appointment) {
         const query = `
-            UPDATE doctor 
+            UPDATE appointment 
             SET 
-                name = ?, email = ?, phone = ?, join_date = ?, role = ?, 
-                salary = ?,, department = ? 
+                name = ?, doctor_id = ?, patient_id = ?, department_id = ?, appointment_date = ?, 
+                appointment_time = ?, patient_email = ?,, patient_phone = ? 
             WHERE id = ?
         `;
         const params = [
-            employer.name, 
-            employer.email, 
-            employer.phone, 
-            employer.join_date, 
-            employer.role, 
-            employer.salary, 
-            employer.department,
-            department.id
+            appointment.name,
+            appointment.doctor_id, 
+            appointment.patient_id, 
+            appointment.department_id, 
+            appointment.appointment_date, 
+            appointment.appointment_time, 
+            appointment.patient_email,
+            appointment.patient_phone,
+            appointment.id
         ];
 
         try {
@@ -75,7 +78,7 @@ export class EmployerService {
     }
 
     async delete(id) {
-        const query = "DELETE employer WHERE id = ?";
+        const query = "DELETE appointment WHERE id = ?";
 
         try {
             const [result] = await this.promiseConn.query(query, [id]);
@@ -86,7 +89,7 @@ export class EmployerService {
     }
 
     async search(key) {
-        const query = "SELECT * FROM employer WHERE first_name = ?";
+        const query = "SELECT * FROM appointment WHERE name = ?";
 
         try {
             const [rows] = await this.promiseConn.query(query, [`%${key}%`]);

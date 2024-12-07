@@ -1,10 +1,10 @@
-export class EmployerService {
+export class ComplainService {
     constructor(promiseConn) {
         this.promiseConn = promiseConn;
     }
 
     async getAll() {
-        const query = "SELECT * FROM employer LIMIT 10";
+        const query = "SELECT * FROM complain LIMIT 10";
         try {
             const [rows] = await this.promiseConn.query(query);
             return rows;
@@ -14,7 +14,7 @@ export class EmployerService {
     }
 
     async getOne(id) {
-        const query = "SELECT * FROM employer WHERE id = "+id;
+        const query = "SELECT * FROM complain WHERE id = "+id;
         
         try {
             const [rows] = await this.promiseConn.query(query, [id]);
@@ -24,19 +24,19 @@ export class EmployerService {
         }
     }
 
-    async post(employer) {
+    async post(complain) {
         const query =  `
-            INSERT INTO employer (name,email,join_date,role,salary,phone,department) 
+            INSERT INTO complain (name,email,join_date,role,salary,phone,department) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const params = [
-            employer.name, 
-            employer.email, 
-            employer.phone, 
-            employer.join_date, 
-            employer.role, 
-            employer.salary, 
-            employer.department
+            complain.name, 
+            complain.email, 
+            complain.phone, 
+            complain.join_date, 
+            complain.role, 
+            complain.salary, 
+            complain.department
         ];
 
         try {
@@ -47,23 +47,24 @@ export class EmployerService {
         }
     }
 
-    async update(employer) {
+    async update(complain) {
         const query = `
             UPDATE doctor 
             SET 
-                name = ?, email = ?, phone = ?, join_date = ?, role = ?, 
-                salary = ?,, department = ? 
+                message = ?, name = ?, email = ?, subject = ?, user_type = ?, 
+                doctor_id = ?, patient_id = ?, employer_id = ? 
             WHERE id = ?
         `;
         const params = [
-            employer.name, 
-            employer.email, 
-            employer.phone, 
-            employer.join_date, 
-            employer.role, 
-            employer.salary, 
-            employer.department,
-            department.id
+            complain.message,
+            complain.name, 
+            complain.email, 
+            complain.subject, 
+            complain.user_type, 
+            complain.doctor_id, 
+            complain.patient_id, 
+            complain.employer_id,
+            complain.id
         ];
 
         try {
@@ -75,7 +76,7 @@ export class EmployerService {
     }
 
     async delete(id) {
-        const query = "DELETE employer WHERE id = ?";
+        const query = "DELETE complain WHERE id = ?";
 
         try {
             const [result] = await this.promiseConn.query(query, [id]);
@@ -86,7 +87,7 @@ export class EmployerService {
     }
 
     async search(key) {
-        const query = "SELECT * FROM employer WHERE first_name = ?";
+        const query = "SELECT * FROM complain WHERE name = ?";
 
         try {
             const [rows] = await this.promiseConn.query(query, [`%${key}%`]);

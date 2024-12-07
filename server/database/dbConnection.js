@@ -1,7 +1,5 @@
-import mysql from 'mysql2';
-import express from 'express';
-import bodyParser from 'body-parser';
-import dotenv from 'dotenv';
+import mysql from 'mysql2'; 
+import dotenv from 'dotenv'; 
 
 dotenv.config();
 
@@ -10,26 +8,21 @@ export const conn = mysql.createPool({
     user: process.env.USER,
     password: process.env.PASSWORD,
     database: process.env.DATABASE_NAME,
-    waitForConnections: true,
-    connectionLimit: 10,
+    waitForConnections: true, 
+    connectionLimit: 10, 
 });
 
-const db = async () => {
-    conn.getConnection(function(connection) {
-        try {
-            console.log('Database connected successfuly!');
-            // connection.release();
-        } catch (error) {
-            console.error('Error connecting to MySQL:', error.message);
-        }
+// Create a promise-based version of the connection for async/await
+export const promiseConn = conn.promise();
 
-        // if (err) {
-        //     console.error('Error connecting to MySQL:', err.message);
-        // } else {
-        //     console.log('Database connected successfuly!');
-        //     connection.release();
-        // }
-    });
-}
+// Function to test and initialize the database connection
+const initializeDB = async () => {
+    try {
+        await promiseConn.getConnection(); // Test the connection
+        console.log('Database connected successfully!');
+    } catch (error) {
+        console.error('Error connecting to MySQL:', error.message);
+    }
+};
 
-export default db;
+export default initializeDB;

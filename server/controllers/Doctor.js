@@ -1,108 +1,84 @@
-import multer from 'multer';
-import fs from 'fs';
-import path from 'path';
-import { getAll, getOne, post, update, search, trash } from '../services/doctorServices.js';
-
-
-export const getDoctor = (req, res, next) => {
-    if (req.cookies[username] === null) {
-        res.redirect('/login');
-    } else {
-        next();
-    }
-}
-
-export const getDoctorById = (req, res) => {
-    var id = req.params.id;
-    getOne(id, function(err, result) {
-        if (err) throw err;
-
-        res.render('doctor/view.ejs', {list: result});
-    })
-}
-
-var storage = multer.diskStorage({
-    destination: function(req, file, callback) {
-        callback(null, "public/assets/images/upload_images");
-    },
-    filename: function(req, file, callback) {
-        console.log(file);
-        callback(null, file.originalname);
-    }
-})
-
-export var upload = multer({ storage: storage });
-
-export const getDoctorList = (req, res) => {
-    getAll(function(err, result) {
-        if (err) throw err;
-
-        res.render('doctor/list.ejs', {list: result});
-    })
-}
-
-export const addDoctor = (req, res) => {
-    if (err) throw err;
-
-    res.render('doctor/add.ejs', {list: result});
-}
-
-export const postDoctor = (req, res) => {
-    var { 
-        first_name, last_name, email, dob, gender, address, phone, filename, department, biography 
-    } = req.body;
-
-    var add_doctor = post(
-        first_name, last_name, email, dob, gender, address, phone, filename, department, biography 
-    )
-    if (add_doctor) {
-        console.log("1 doctor added successfuly!");
+export class DoctorController {
+    constructor(doctorService) {
+        this.doctorService = doctorService;
     }
 
-    res.render('/doctor/list.ejs');
-}
+    async getDoctorList(req, res) {
+        try {
+            const doctors = await this.doctorService.getAll();
+            res.render('doctor/list.ejs', { list: doctors });
+        } catch (err) {
+            res.status(500).json({ error: 'Error fetching doctors: ' + err.message });
+        }
+    }
 
-export const editDoctor = (req, res) => {
-    var id = req.params.id;
+    async getDoctorById(req, res) {
+        try {
+            const id = req.params.id;
+            const doctor = await this.doctorService.getOne(id);
+            res.render('doctor/view.ejs', { list: doctor });
+        } catch (err) {
+            res.status(500).json({ error: 'Error fetching doctor: ' + err.message });
+        }
+    }
 
-    getOne(id, function(err, result) {
-        res.render('/doctor/edit.ejs', {list: result});
-    })
-}
+    async addDoctor(req, res) {
+        res.render('doctor/add.ejs');
+    }
 
-export const updateDoctor = (req, res) => {
-    var id = req.params.id;
-    var { 
-        id, first_name, last_name, email, dob, gender, address, phone, department, biography 
-    } = req.body;
+    async postDoctor(req, res) {
+        try {
+            await this.doctorService.post(req.body);
+            res.redirect('/doctors');
+        } catch (err) {
+            res.status(500).json({ error: 'Error adding doctor: ' + err.message });
+        }
+    }
 
-    update(id, first_name, last_name, email, dob, gender, address, phone, department, biography, function(err, result) {
-        if (err) throw err;
-        res.redirect('/doctor/list.ejs', {list: result});
-    })
-}
+    async editDoctor(req, res) {
+        try {
+            const id = req.params.id;
+            const doctor = await this.doctorService.getOne(id);
+            res.render('doctor/edit.ejs', { list: doctor });
+        } catch (err) {
+            res.status(500).json({ error: 'Error fetching doctor: ' + err.message });
+        }
+    }
 
-export const confirmDeleteDoctor = (req, res) => {
-    var id = req.params.id;
+    async updateDoctor(req, res) {
+        try {
+            await this.doctorService.update({ ...req.body, id: req.params.id });
+            res.redirect('/doctors');
+        } catch (err) {
+            res.status(500).json({ error: 'Error updating doctor: ' + err.message });
+        }
+    }
 
-    getOne(id, function(err, result) {
-        res.render('/doctor/delete.ejs', {list: result});
-    })
-}
+    async confirmDeleteDoctor(req, res) {
+        try {
+            const id = req.params.id;
+            const doctor = await this.doctorService.getOne(id);
+            res.render('templates/confirm_delete.ejs', { doctor });
+        } catch (err) {
+            res.status(500).json({ error: 'Error fetching doctor: ' + err.message });
+        }
+    }
 
-export const deleteDoctor = (req, res) => {
-    var id = req.params.id;
+    async deleteDoctor(req, res) {
+        try {
+            await this.doctorService.delete(req.params.id);
+            res.redirect('/doctors');
+        } catch (err) {
+            res.status(500).json({ error: 'Error deleting doctor: ' + err.message });
+        }
+    }
 
-    trash(id, function(err, result) {
-        res.render('/doctor/list.ejs', {list: result});
-    })
-}
-
-export const searchDoctor = (req, res) => {
-    var key = req.body.search;
-
-    search(key, function(err, result) {
-        console.log(result);
-        res.render('/doctor/list.ejs', {list: result});
-    })
+    async searchDoctor(req, res) {
+        try {
+            const doctors = await this.doctorService.search(req.query.search);
+            res.render('doctor/list.ejs', { list: doctors });
+        } catch (err) {
+            res.status(500).json({ error: 'Error searching for doctors: ' + err.message });
+        }
+    }
 }
