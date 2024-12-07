@@ -6,6 +6,10 @@ export class AuthController {
         this.authService = authService;
     }
 
+    renderRegisterPage = async (req, res) => {
+        res.render('../views/user/signup.ejs');
+    }
+
     signUp = async (req, res) => {
         const { username, email, password } = req.body;
 
@@ -28,11 +32,16 @@ export class AuthController {
             });
 
             res.status(201).json({ message: 'User signed up successfully' });
+            res.render('../views/dashboard/list.ejs');
         } catch (error) {
             console.error('Error during signup:', error.message);
             res.status(500).json({ message: 'Server error' });
         }
     };
+
+    renderLoginPage = (req, res) => {
+        res.render('../views/user/login.ejs');
+    }
 
     logIn = async (req, res) => {
         const { username, password } = req.body;
@@ -53,6 +62,7 @@ export class AuthController {
             const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
             res.status(200).json({ message: 'Login successful', token });
+            res.render('../views/dashboard/list.ejs');
         } catch (error) {
             console.error('Error during login:', error.message);
             res.status(500).json({ message: 'Server error' });
@@ -84,6 +94,7 @@ export class AuthController {
                 return res.status(500).json({ message: 'Logout failed' });
             }
             res.status(200).json({ message: 'Logout successful' });
+            res.render('../views/user/login.ejs');
         });
     };
 
@@ -94,9 +105,40 @@ export class AuthController {
             const hashedPassword = await bcrypt.hash(newPassword, 10);
             await this.authService.updatePassword(email, hashedPassword);
             res.status(200).json({ message: 'Password reset successful' });
+            res.render('../views/user/login.ejs');
         } catch (error) {
             console.error('Error during password reset:', error.message);
             res.status(500).json({ message: 'Server error' });
         }
     };
+
+    renderResetPage = (req, res) => {
+        res.render('../views/user/reset.ejs');
+    };
+
+    renderForgotPasswordPage = (req, res) => {
+        res.render('../views/user/forgot-password.ejs');
+    }
+
+    async forgotPassword(req, res) {
+        const { email } = req.body;
+    
+        try {
+            await authService.sendResetLink(email);
+            res.status(200).json({ message: 'Password reset link sent to your email' });
+        } catch (error) {
+            res.status(500).json({ message: 'Server error, please try again later' });
+        }
+    }
+
+    async resetPassword(req, res) {
+        const { token, newPassword } = req.body;
+    
+        try {
+            await authService.resetPassword(token, newPassword);
+            res.status(200).json({ message: 'Password reset successfully' });
+        } catch (error) {
+            res.status(500).json({ message: 'Error resetting password' });
+        }
+    }
 }

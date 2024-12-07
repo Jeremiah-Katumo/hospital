@@ -15,6 +15,10 @@ authRouter
     .post('/login', (req, res) => authController.logIn(req, res))
     .post('/verify', (req, res) => authController.verify(req, res))
     .get('/logout', (req, res) => authController.logOut(req, res))
-    .post('/reset', (req, res) => authController.reset(req, res));
+    .get('/forgot_password', (req, res) => authController.renderForgotPasswordPage(req, res))
+    .post('/forgot_password', (req, res) => authController.forgotPassword(req, res))
+    .get('/reset_password', (req, res) => authController.renderResetPage(req, res))
+    .post('/reset_password', (req, res) => authController.resetPassword(req, res));
+    // .post('/reset', (req, res) => authController.reset(req, res));
 
 export default authRouter;
