@@ -1,0 +1,63 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Forgot Password</title>
+    <link href="../../public/assets/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+    <link href="../../public/assets/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
+    <link href="../../public/assets/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
+    <link href="../../public/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../public/assets/css/master.css" rel="stylesheet">
+    <link href="../../public/assets/vendor/flagiconcss/css/flag-icon.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.min.css"/>
+    <script src="../../public/assets/js/jquery/jquery-3.7.1.min.js"></script>
+</head>  
+
+<body>
+    <div class="wrapper">
+        <div class="auth-content">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <img class="brand" src="assets/img/bootstraper-logo.png" alt="bootstraper logo">
+                    </div>
+                    <h6 class="mb-4 text-muted">Reset your password</h6>
+                    <form action="/reset" id="reset_password_form">
+                        <div class="mb-3 text-start">
+                            <label for="token" class="form-label">Reset Token:</label>
+                            <input type="text" class="form-control" id="token" name="token" placeholder="Enter the reset token" required>
+                        </div>
+                        <div class="mb-3 text-start">
+                            <label for="new-password" class="form-label">New Password:</label>
+                            <input type="password" class="form-control" id="new-password" name="new-password" placeholder="Enter your new password" required>
+                        </div>
+                        <div class="mb-3 text-start">
+                            <label for="confirm-password" class="form-label">Confirm Password:</label>
+                            <input type="password" class="form-control" id="confirm-password" name="confirm-password" placeholder="Confirm your new password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary shadow-2 mb-4">Reset Password</button>
+                    </form>
+                    <p class="mb-2 text-muted">Forgot password? <a href="forgot-password.ejs">Reset</a></p>
+                    <p class="mb-0 text-muted">Don't have account yet? <a href="signup.ejs">Signup</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../public/assets/vendor/jquery/jquery.min.js"></script>
+    <script src="../../public/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../public/assets/vendor/chartsjs/Chart.min.js"></script>
+    <script src="../../public/assets/js/dashboard-charts.js"></script>
+    <script src="../../public/assets/js/script.js"></script>
+
+    <script src="../../public/assets/vendor/jquery/jquery.min.js"></script>
+    <script src="../../public/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../templates/js_scripts.js"></script>
+</body>
+
+</html>
