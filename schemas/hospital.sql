@@ -10,6 +10,7 @@ SET NAMES utf8mb4;
 DROP TABLE IF EXISTS `appointment`;
 CREATE TABLE `appointment` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
+  `doctor_id` int(10) DEFAULT NULL,
   `patient_id` int(11) DEFAULT NULL,
   `department_id` int(11) DEFAULT NULL,
   `appointment_date` varchar(255) NOT NULL,
@@ -25,8 +26,10 @@ CREATE TABLE `appointment` (
   PRIMARY KEY (`id`),
   KEY `patient_id` (`patient_id`),
   KEY `department_id` (`department_id`),
+  KEY `doctor_id` (`doctor_id`),
   CONSTRAINT `appointment_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`id`),
-  CONSTRAINT `appointment_ibfk_2` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`)
+  CONSTRAINT `appointment_ibfk_2` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`),
+  CONSTRAINT `appointment_ibfk_3` FOREIGN KEY (`doctor_id`) REFERENCES `doctor` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -174,6 +177,27 @@ CREATE TABLE `login` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
+DROP TABLE IF EXISTS `medication`;
+CREATE TABLE `medication` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `patient_id` int(11) DEFAULT NULL,
+  `doctor_id` int(10) DEFAULT NULL,
+  `created_at` date DEFAULT NULL,
+  `created_by` int(10) DEFAULT NULL,
+  `updated_at` datetime DEFAULT current_timestamp(),
+  `updated_by` int(10) DEFAULT NULL,
+  `deleted_at` date DEFAULT NULL,
+  `deleted_by` int(10) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `patient_id` (`patient_id`),
+  KEY `doctor_id` (`doctor_id`),
+  CONSTRAINT `medication_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`id`),
+  CONSTRAINT `medication_ibfk_2` FOREIGN KEY (`doctor_id`) REFERENCES `doctor` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 DROP TABLE IF EXISTS `patient`;
 CREATE TABLE `patient` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -270,4 +294,4 @@ CREATE TABLE `verify` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
--- 2024-12-06 23:25:37
+-- 2024-12-07 17:42:54
