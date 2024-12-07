@@ -6,7 +6,7 @@ import { AppointmentController } from '../controllers/Appointment.js';
 const appointmentService = injector.get('AppointmentService');
 const appointmentController = new AppointmentController(appointmentService);
 
-employerRouter = express.Router;
+employerRouter = express.Router();
 
 employerRouter.get('/appointments', (req, res) => appointmentController.getAppointmentList(req, res))
     .get('/appointments/:id', (req, res) => appointmentController.getAppointmentById(req, res))
