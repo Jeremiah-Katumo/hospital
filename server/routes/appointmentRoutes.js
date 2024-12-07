@@ -11,12 +11,12 @@ employerRouter = express.Router();
 employerRouter.get('/appointments', (req, res) => appointmentController.getAppointmentList(req, res))
     .get('/appointments/:id', (req, res) => appointmentController.getAppointmentById(req, res))
     .get('/appointments/add', (req, res) => appointmentController.addAppointment(req, res))
-    .post('/appointments/save', (req, res) => appointmentController.postAppointment(req, res))
-    .get('/appointments/edit/:id', (req, res) => appointmentController.editAppointment(req, res))
-    .post('/appointments/update/:id', (req, res) => appointmentController.updateAppointment(req, res))
-    .get('/appointments/delete/:id', (req, res) => appointmentController.confirmDeleteAppointment(req, res))
-    .post('/appointments/delete/:id', (req, res) => appointmentController.deleteAppointment(req, res))
-    .get('/appointments/search', (req, res) => appointmentController.searchAppointment(req, res));
+    .post('/appointments', (req, res) => appointmentController.postAppointment(req, res))
+    .get('/appointments/:id/edit', (req, res) => appointmentController.editAppointment(req, res))
+    .put('/appointments/:id', (req, res) => appointmentController.updateAppointment(req, res))
+    .get('/appointments/:id/confirm_delete', (req, res) => appointmentController.confirmDeleteAppointment(req, res))
+    .post('/appointments/:id', (req, res) => appointmentController.deleteAppointment(req, res))
+    .get('/appointments/search/:id', (req, res) => appointmentController.searchAppointment(req, res));
 
 
 export default employerRouter;

@@ -1,4 +1,4 @@
-class LeaveService {
+export class LeaveService {
     constructor(promiseConn) {
         this.promiseConn = promiseConn;
     }
@@ -80,5 +80,3 @@ class LeaveService {
         }
     }
 }
-
-export default LeaveService;

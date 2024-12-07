@@ -1,65 +1,88 @@
-import db, { conn } from '../database/dbConnection.js';
+export class PatientService {
+    constructor(promiseConn) {
+        this.promiseConn = promiseConn;
+    }
 
-export const getAll = (callback) => {
-    const query = 'SELECT * FROM patient LIMIT 10';
-    conn.query(query, callback);
-    console.log(query);
-}
+    getAll(callback) {
+        const query = 'SELECT * FROM patient LIMIT 10';
+        this.promiseConn.query(query, callback);
+        console.log(query);
+    }
 
-export const getOne = (id, Callback) => {
-    const query = 'SELECT * FROM patient WHERE id = '+id;
-    conn.query(query, callback);
-    console.log(query);
-}
+    getOne(id, callback) {
+        const query = 'SELECT * FROM patient WHERE id = ?';
+        this.promiseConn.query(query, [id], callback);
+        console.log(query);
+    }
 
-export const post = (
-    first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth
-) => {
-    var query = `
-        INSERT INTO patient (first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    `;
-    const params = [first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth];
+    post(first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth) {
+        const query = `
+            INSERT INTO patient (first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `;
+        const params = [first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth];
 
-    conn.query(query, params, (err, result) => {
-        if (err) {
-            console.log('Database error', err);
-        }
-    })
+        this.promiseConn.query(query, params, (err, result) => {
+            if (err) {
+                console.log('Database error', err);
+            }
+        });
 
-    console.log(query);
-}
+        console.log(query);
+    }
 
-export const update = (
-    first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth
-) => {
-    var query = `
-        UPDATE patient
-        SET 
-            first_name = ?, last_name = ?, doctor_id = ?, patient_number = ?, 
-            diagnosis = ?, location = ?, date_of_birth = ?
-        WHERE id = ?
-    `;
-    const params = [first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth, id];
+    update(id, first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth) {
+        const query = `
+            UPDATE patient
+            SET 
+                first_name = ?, last_name = ?, doctor_id = ?, patient_number = ?, 
+                diagnosis = ?, location = ?, date_of_birth = ?
+            WHERE id = ?
+        `;
+        const params = [first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth, id];
 
-    conn.query(query, params, (err, result) => {
-        if (err) {
-            console.error('Database error:', err);
-        } else {
-            console.log('Patient update successful:', result);
-        }
-    });
+        this.promiseConn.query(query, params, (err, result) => {
+            if (err) {
+                console.error('Database error:', err);
+            } else {
+                console.log('Patient update successful:', result);
+            }
+        });
 
-    console.log(query);
-}
+        console.log(query);
+    }
 
-export const search = async (id,callback) => {
-    var query = "SELECT * FROM patient WHERE first_name LIKE "%'+key+'%"'";
-    db.query(query, callback);
-    console.log(query);
-}
+    search(key, callback) {
+        const query = "SELECT * FROM patient WHERE first_name LIKE ?";
+        this.promiseConn.query(query, [`%${key}%`], callback);
+        console.log(query);
+    }
 
-export const trash = async (id, callback) => {
-    var query = "DELETE FROM patient WHERE id = "+id;
-    db.query(query, callback);
+    trash(id, callback) {
+        const query = `UPDATE patient SET deleted_at = NOW() WHERE id = ?`;
+        const params = [id];
+        
+        db.query(query, params, (err, result) => {
+            if (err) {
+                return callback(err, null);
+            }
+            callback(null, result);
+        });
+    
+        console.log(query);
+    };
+
+    restore(id, callback) {
+        const query = `UPDATE patient SET deleted_at = NULL WHERE id = ?`;
+        const params = [id];
+        
+        db.query(query, params, (err, result) => {
+            if (err) {
+                return callback(err, null);
+            }
+            callback(null, result);
+        });
+    
+        console.log(query);
+    };
 }
