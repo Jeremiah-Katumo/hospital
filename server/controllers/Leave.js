@@ -1,93 +1,84 @@
-import multer from 'multer';
-import fs from 'fs';
-import path from 'path';
-import {
-    getAll,
-    post,
-    search,
-    trash,
-    update,
-} from '../services/leaveServices.js';
 import { validationResult } from 'express-validator';
 
-export const getLeaveList = (req, res) => {
-    getAll((err, result) => {
-        if (err) {
-            res.status(404).json({ error: 'No employers on leave!'})
-        }
-
-        res.render('leave/leave.ejs', {list: result});
-    })
-}
-
-export const addLeave = (req, res) => {
-    res.render('leave/add.ejs');
-}
-
-export const postLeave = (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return errorResponse(res, 'Validation failed', 422, errors.array());
+class LeaveController {
+    constructor(leaveService) {
+        this.leaveService = leaveService;
     }
 
-    var {
-        first_name, last_name, employee_id, leave_type, date_from, date_to, reason
-    } = req.body;
-
-    post(first_name, last_name, employee_id, leave_type, date_from, date_to, reason, (err) => {
-        if (err) {
-            res.status(404).json({ error: 'An error occured while posting Leave'})
+    async getLeaveList(req, res) {
+        try {
+            const leaves = await this.leaveService.getAll();
+            res.render('leave/leave.ejs', { list: leaves });
+        } catch (error) {
+            res.status(404).json({ error: 'No employers on leave!' });
         }
-
-        res.status(201).json({ message: `Leave added successfuly!` });
-    })
-}
-
-export const editLeave = (req, res) => {
-    res.render('leave/edit.ejs');
-}
-
-export const updateLeave = (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return errorResponse(res, 'Validation failed', 422, errors.array());
     }
 
-    var {
-        id, first_name, last_name, employee_id, leave_type, date_from, date_to, reason
-    } = req.body;
+    addLeave(req, res) {
+        res.render('leave/add.ejs');
+    }
 
-    update(id, first_name, last_name, employee_id, leave_type, date_from, date_to, reason, (err) => {
-        if (err) {
-            res.status(404).json({ error: `Leave with id ${id} does not exist!`});
+    async postLeave(req, res) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ error: 'Validation failed', details: errors.array() });
         }
-    })
 
-    res.status(201).json({ message: 'Leave updated'})
-}
+        const { firstName, lastName, employeeId, leaveType, dateFrom, dateTo, reason } = req.body;
 
-export const confirmDeleteLeave = (req, res) => {
-    res.render('templates/confirm_delete.js');
-}
-
-export const deleteLeave = (req, res) => {
-    var id = req.params.id;
-
-    trash(id, (err, result) => {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while deleting the leave' });
+        try {
+            await this.leaveService.post({ firstName, lastName, employeeId, leaveType, dateFrom, dateTo, reason });
+            res.status(201).json({ message: 'Leave added successfully!' });
+        } catch (error) {
+            res.status(500).json({ error: 'An error occurred while posting Leave' });
         }
-        res.render('/leave/list.ejs', { list: result });
-    })
-}
+    }
 
-export const searchLeave = (req, res) => {
-    var key = req.body.search;
+    editLeave(req, res) {
+        res.render('leave/edit.ejs');
+    }
 
-    search(key, function (err, result) {
-        if (err) {
-            return res.status(500).json({ error: 'An error occurred while searching the leave' });
+    async updateLeave(req, res) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ error: 'Validation failed', details: errors.array() });
         }
-        res.render('/leave/list.ejs', { list: result });
-    })
+
+        const { id, firstName, lastName, employeeId, leaveType, dateFrom, dateTo, reason } = req.body;
+
+        try {
+            await this.leaveService.update(id, { firstName, lastName, employeeId, leaveType, dateFrom, dateTo, reason });
+            res.status(200).json({ message: 'Leave updated successfully!' });
+        } catch (error) {
+            res.status(404).json({ error: `Leave with id ${id} does not exist!` });
+        }
+    }
+
+    confirmDeleteLeave(req, res) {
+        res.render('templates/confirm_delete.js');
+    }
+
+    async deleteLeave(req, res) {
+        const { id } = req.params;
+
+        try {
+            await this.leaveService.trash(id);
+            res.redirect('/leave/list');
+        } catch (error) {
+            res.status(500).json({ error: 'An error occurred while deleting the leave' });
+        }
+    }
+
+    async searchLeave(req, res) {
+        const { search: key } = req.body;
+
+        try {
+            const results = await this.leaveService.search(key);
+            res.render('/leave/list.ejs', { list: results });
+        } catch (error) {
+            res.status(500).json({ error: 'An error occurred while searching the leave' });
+        }
+    }
 }
+
+export default LeaveController;

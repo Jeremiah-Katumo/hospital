@@ -1,28 +1,24 @@
-import express from "express";
-import session from "express-session";
-import {
-    addLeave, confirmDeleteLeave, deleteLeave, editLeave,
-    getLeaveList, postLeave, searchLeave, updateLeave
-} from "../controllers/Leave.js";
-import { useLeaveValidator } from "../validations/validations.js";
-import { validate } from '../validations/index.js';
+import express from 'express';
+import injector from '../injectors/injector.js';
+import LeaveController from '../controllers/LeaveController.js';
 
+// Retrieve the LeaveService instance
+const leaveService = injector.get('LeaveService');
+// Initialize the LeaveController with the service
+const leaveController = new LeaveController(leaveService);
 
-var leaveRouter = express.Router();
+// Create a router for leave operations
+const leaveRouter = express.Router();
 
-leaveRouter.use(session({
-    secret: 'secret',
-    resave: true,
-    saveUninitialized: true
-}))
-
-leaveRouter.get('/leaves', getLeaveList)
-    .get('/leaves/add', addLeave)
-    .post('/leaves/save', validate(useLeaveValidator), postLeave)
-    .get('/leaves/edit/:id', editLeave)
-    .post('/leaves/update/:id', validate(useLeaveValidator), updateLeave)
-    .get('/leaves/delete/:id', confirmDeleteLeave)
-    .post('/leaves/delete/:id', deleteLeave)
-    .get('/leaves/search', searchLeave);
+// Define routes for leave operations
+leaveRouter
+    .get('/leaves', (req, res) => leaveController.getLeaveList(req, res))
+    .get('/leaves/add', (req, res) => leaveController.addLeave(req, res))
+    .post('/leaves', (req, res) => leaveController.postLeave(req, res))
+    .get('/leaves/edit/:id', (req, res) => leaveController.editLeave(req, res))
+    .put('/leaves/:id', (req, res) => leaveController.updateLeave(req, res))
+    .get('/leaves/confirm-delete/:id', (req, res) => leaveController.confirmDeleteLeave(req, res))
+    .delete('/leaves/:id', (req, res) => leaveController.deleteLeave(req, res))
+    .post('/leaves/search', (req, res) => leaveController.searchLeave(req, res));
 
 export default leaveRouter;
