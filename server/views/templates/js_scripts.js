@@ -34,7 +34,7 @@ $('#login_form').on('submit', function (e) {
 });
 
 // Forget Password Form Submission
-$('#forget-password-form').on('submit', function (e) {
+$('#forget_password_form').on('submit', function (e) {
     e.preventDefault();
     const formData = $(this).serialize();
 
@@ -52,7 +52,7 @@ $('#forget-password-form').on('submit', function (e) {
 });
 
 // Reset Password Form Submission
-$('#reset-password-form').on('submit', function (e) {
+$('#reset_password_form').on('submit', function (e) {
     e.preventDefault();
     const formData = $(this).serialize();
 
@@ -71,7 +71,7 @@ $('#reset-password-form').on('submit', function (e) {
 
 
 // Forget Password Form Submission with GET method
-$('#forget-password_form').on('submit', function (e) {
+$('#forget_password_form').on('submit', function (e) {
     e.preventDefault();
     const email = $('#email').val();
 
@@ -88,7 +88,7 @@ $('#forget-password_form').on('submit', function (e) {
 });
 
 // Reset Password Form Submission with GET method
-$('#reset-password-form').on('submit', function (e) {
+$('#reset_password_form').on('submit', function (e) {
     e.preventDefault();
     const token = $('#token').val();
     const newPassword = $('#new-password').val();
