@@ -1,204 +1,102 @@
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-import { validationResult } from 'express-validator';
-import { successResponse, errorResponse } from '../../helpers/responseHelper.js';
-import { hashPassword } from '../../helpers/bcryptHelper.js';
-import { generateToken } from '../../helpers/jwtHelper.js';
-import {
-    findUserByUsername,
-    insertUser,
-    insertVerificationToken,
-    getUserIdByEmail,
-} from '../../services/authServices.js';
-import { findOne, matchToken, temp, updateVerify } from '../../services/authServices.js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
-
-dotenv.config();
-
-export const signUp = async (req, res) => {
-    // Validate the request
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return errorResponse(res, 'Validation failed', 422, errors.array());
+export default class AuthController {
+    constructor(authService) {
+        this.authService = authService;
     }
 
-    const { username, email, password } = req.body;
+    signUp = async (req, res) => {
+        const { username, email, password } = req.body;
 
-    try {
-        // Hash the user's password
-        const hashedPassword = await hashPassword(password);
+        try {
+            // Check if user exists
+            const existingUser = await this.authService.findUserByUsername(username);
+            if (existingUser) {
+                return res.status(400).json({ message: 'Username already exists' });
+            }
 
-        // Insert the user into the database
-        await insertUser(username, email, hashedPassword, 'not_verified');
+            // Hash password
+            const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Generate a verification token
-        const token = generateToken({ username, email });
+            // Save user
+            await this.authService.insertUser({
+                username,
+                email,
+                password: hashedPassword,
+                emailStatus: 'pending',
+            });
 
-        // Store the verification token in the database
-        await insertVerificationToken(username, email, token);
-
-        // Retrieve the user's ID
-        const user = await getUserIdByEmail(email);
-
-        if (!user) {
-            return errorResponse(res, 'Failed to retrieve user ID', 500);
+            res.status(201).json({ message: 'User signed up successfully' });
+        } catch (error) {
+            console.error('Error during signup:', error.message);
+            res.status(500).json({ message: 'Server error' });
         }
+    };
 
-        // Prepare the email content
-        const verificationLink = `http://localhost:3000/api/v1/verify?token=${token}`;
-        const output = `
-            <p>Dear ${username},</p>
-            <p>Thank you for signing up. Please find your verification details below:</p>
-            <ul>
-                <li>User ID: ${user.id}</li>
-                <li>Token: ${token}</li>
-            </ul>
-            <p>Click the following link to verify your account:</p>
-            <a href="${verificationLink}">${verificationLink}</a>
-            <p>If you did not sign up for this account, please ignore this email.</p>
-            <p>This is an automated email, please do not reply.</p>
-        `;
+    logIn = async (req, res) => {
+        const { username, password } = req.body;
 
-        // Configure the mail transporter
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 465,
-            secure: true,
-            auth: {
-                user: process.env.EMAIL_USER, // Environment variables for credentials
-                pass: process.env.EMAIL_PASSWORD,
-            },
+        try {
+            const user = await this.authService.findUserByUsername(username);
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            // Verify password
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+            if (!isPasswordValid) {
+                return res.status(401).json({ message: 'Invalid password' });
+            }
+
+            // Generate JWT token
+            const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+            res.status(200).json({ message: 'Login successful', token });
+        } catch (error) {
+            console.error('Error during login:', error.message);
+            res.status(500).json({ message: 'Server error' });
+        }
+    };
+
+    verify = async (req, res) => {
+        const { email, token } = req.body;
+
+        try {
+            const userId = await this.authService.getUserIdByEmail(email);
+            if (!userId) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            // Update verification status
+            await this.authService.updateEmailVerificationStatus(email, 'verified');
+            res.status(200).json({ message: 'Email verified successfully' });
+        } catch (error) {
+            console.error('Error during verification:', error.message);
+            res.status(500).json({ message: 'Server error' });
+        }
+    };
+
+    logOut = (req, res) => {
+        req.session.destroy((err) => {
+            if (err) {
+                console.error('Error during logout:', err.message);
+                return res.status(500).json({ message: 'Logout failed' });
+            }
+            res.status(200).json({ message: 'Logout successful' });
         });
+    };
 
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'Verify Your Email Address',
-            html: output,
-        };
+    reset = async (req, res) => {
+        const { email, newPassword } = req.body;
 
-        // Send the verification email
-        await transporter.sendMail(mailOptions);
-
-        // Respond with success
-        return successResponse(res, 201, 'Sign-up successful! Check your email for verification details.');
-    } catch (err) {
-        console.error('Error during sign-up:', err.message);
-        return errorResponse(res, 'An error occurred during sign-up', 500);
-    }
-};
-
-
-export const verify = (req, res) => {
-    var { id, token } = req.body;
-
-    matchToken(id, token, function(err, result) {
-        console.log(result);
-        if (result.length > 0) {
-            var email = result[0].email;
-            var emailStatus = "verified";
-
-            updateVerify(email, emailStatus, function(err, result) {
-                res.send("Email verified!");
-            })
-        } else {
-            res.send("Token did not match!");
+        try {
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            await this.authService.updatePassword(email, hashedPassword);
+            res.status(200).json({ message: 'Password reset successful' });
+        } catch (error) {
+            console.error('Error during password reset:', error.message);
+            res.status(500).json({ message: 'Server error' });
         }
-    })
-}
-
-export const logIn = async (req, res) => {
-    // Validate the request
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return errorResponse(res, 'Validation failed', 422, errors.array());
-    }
-
-    const { username, password } = req.body;
-
-    if (!username || !password) {
-        return errorResponse(res, 'Please enter username and password', 400);
-    }
-
-    try {
-        const user = await findUserByUsername(username);
-
-        if (user.length > 0) {
-            const isMatch = await comparePassword(password, user[0].password);
-            if (!isMatch) {
-                return errorResponse(res, 'Incorrect user credentials!');
-            }
-
-            const token = generateToken({ username: user[0].username, userId: user[0].id });
-            res.cookie('authToken', token);
-
-            if (user[0].email_status === 'not_verified') {
-                return errorResponse(res, 'Please verify your email!');
-            } else {
-                return successResponse(res, 200, 'Logged In', { redirect: '/home', token });
-            }
-        } else {
-            return errorResponse(res, 'Incorrect user credentials!', 403);
-        }
-    } catch (error) {
-        return errorResponse(res, 'An error occurred during login', 500);
-    }
-};
-
-export const logOut = (req, res) => {
-    // clear cookie after signout
-    res.clearCookie('authToken');
-    res.json({
-        message: 'Signout successful'
-    })
-}
-
-
-export const reset = (req, res) => {
-    var email = req.body.email;
-
-    findOne(email, function(err, resultone) {
-        console.log('Mail does not exist!');
-        res.redirect('Mail does not exist!');
-
-        var id = resultone[0].id;
-        var email = resultone[0].email;
-        var username = resultone[0].username;
-        var token = generateToken(resultone[0]);
-
-        temp(id, email, token, function(err, resulttwo) {
-            var output = `<p>Dear `+username+`,</p> 
-                <p>You are seeing this email because you requested to reset your password.</p>
-                <ul>
-                    <li>User ID: `+id+`</li>
-                    <li>Token: `+token`</li>
-                </ul>
-            `;
-
-            var transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: process.env.EMAIL_USER, 
-                    pass: process.env.EMAIL_PASSWORD,
-                }
-            })
-
-            var mailOptions = {
-                from: process.env.EMAIL_USER,
-                to: email,
-                subject: 'Password Reset',
-                html: output
-            }
-
-            transporter.sendMail(mailOptions, function(err, info) {
-                if (err) {
-                    return console.log(err);
-                } else {
-                    console.log(info);
-                }
-            })
-        })
-    })
-
-    res.send('A token has been sent to your email address!')
+    };
 }
