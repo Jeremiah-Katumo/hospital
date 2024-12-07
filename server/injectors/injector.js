@@ -7,10 +7,12 @@ import { DepartmentService } from '../services/departmentServices.js';
 import { DiagnosisService } from '../services/diagnosisServices.js';
 import { LeaveService } from '../services/leaveServices.js';
 import { PatientService } from '../services/patientServices.js';
+import AuthService from '../services/authServices.js';
 
 
 const injector = {
     services: {
+        AuthService: new AuthService(promiseConn),
         DoctorService: new DoctorService(promiseConn),
         EmployerService: new EmployerService(promiseConn),
         AppointMentService: new AppointmentService(promiseConn),
