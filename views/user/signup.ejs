@@ -6,17 +6,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Forgot Password</title>
+    <title>Sign Up</title>
     <link href="../../public/assets/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
     <link href="../../public/assets/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
     <link href="../../public/assets/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
     <link href="../../public/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../public/assets/css/auth.css" rel="stylesheet">
     <link href="../../public/assets/css/master.css" rel="stylesheet">
     <link href="../../public/assets/vendor/flagiconcss/css/flag-icon.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.min.css"/>
     <script src="../../public/assets/js/jquery/jquery-3.7.1.min.js"></script>
-</head> 
+</head>  
 
 <body>
     <div class="wrapper">
@@ -24,18 +25,38 @@
             <div class="card">
                 <div class="card-body text-center">
                     <div class="mb-4">
-                        <img class="brand" src="assets/img/bootstraper-logo.png" alt="bootstraper logo">
+                        <img class="brand" src="../../public/assets/img/bootstraper-logo.png" alt="bootstraper logo">
                     </div>
-                    <h6 class="mb-4 text-muted">Reset Password</h6>
-                    <p class="text-muted text-start">Enter your email address and your new password will be emailed to you.</p>
-                    <form action="/reset" id="forgot_password_form">
+                    <h6 class="mb-4 text-muted">Create new account</h6>
+                    <form action="/register" id="signup_form">
+                        <div class="mb-3 text-start">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" placeholder="Enter Name" required>
+                        </div>
                         <div class="mb-3 text-start">
                             <label for="email" class="form-label">Email adress</label>
                             <input type="email" class="form-control" placeholder="Enter Email" required>
                         </div>
-                        <button type="submit" class="btn btn-primary shadow-2 mb-4">Send me new password</button>
+                        <div class="mb-3 text-start">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" placeholder="Password" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <input type="password" class="form-control" placeholder="Confirm password" required>
+                        </div> 
+                       
+                        <div class="mb-3 text-start">
+                            <div class="form-check">
+                              <input class="form-check-input" name="confirm" type="checkbox" value="" id="check1">
+                              <label class="form-check-label" for="check1">
+                                I agree to the <a href="#" tabindex="-1">terms and policy</a>.
+                              </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary shadow-2 mb-4">Register</button>
                     </form>
-                    <p class="mb-0 text-muted">Don’t have an account? <a href="signup.ejs">Sign up</a></p>
+                    <p class="mb-0 text-muted">Allready have an account? <a href="/api/v1/login">Log in</a></p>
                 </div>
             </div>
         </div>
@@ -49,7 +70,7 @@
 
     <script src="../../public/assets/vendor/jquery/jquery.min.js"></script>
     <script src="../../public/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../../templates/js_scripts.js"></script>
+    <script src="../templates/js_scripts.js"></script>
 </body>
 
 </html>

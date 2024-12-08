@@ -2,6 +2,7 @@ import express from 'express';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import ejs from 'ejs';
 import multer from 'multer';
 import async from 'async';
@@ -20,10 +21,15 @@ import db from './server/database/dbConnection.js';
 
 dotenv.config();
 
-var app = express();
+const app = express();
+
+// Define __dirname in ES module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.set('view_engine', 'ejs');
-// const server = http.createServer(app);
+app.set('server/views', path.join(__dirname, 'views'));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.use(express.static('./server/public/'));
 app.use(cors());

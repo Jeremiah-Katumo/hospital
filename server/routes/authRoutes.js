@@ -9,8 +9,8 @@ const authController = new AuthController(authService);
 const authRouter = express.Router();
 
 authRouter
-    .get('/register', (req, res) => authController.renderRegisterPage(req, res)) // Optional route to render a registration page
-    .post('/register', (req, res) => authController.signUp(req, res))
+    .get('/signup', (req, res) => authController.renderRegisterPage(req, res)) // Optional route to render a registration page
+    .post('/signup', (req, res) => authController.signUp(req, res))
     .get('/login', (req, res) => authController.renderLoginPage(req, res)) // Optional route to render a login page
     .post('/login', (req, res) => authController.logIn(req, res))
     .post('/verify', (req, res) => authController.verify(req, res))
