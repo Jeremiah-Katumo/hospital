@@ -38,6 +38,14 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 // app.use('./signup', signup);
 
+app.get('/', (req, res) => {
+    res.redirect('/login');
+})
+
+// app.get('/api/v1/', (req, res) => {
+//     res.redirect('/api/v1/login');
+// })
+
 const PORT = process.env.PORT || 3000;
 const routePath = './server/routes';
 
@@ -58,7 +66,7 @@ const loadRoutes = async () => {
     for (const file of files) {
         try {
             const module = await import(`${routePath}/${file}`);
-            app.use('/api/v1', module.default);
+            app.use('/', module.default);
         } catch (error) {
             console.error(`Error loading route from file ${file}:`, error);
         }
