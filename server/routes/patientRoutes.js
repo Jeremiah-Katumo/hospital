@@ -18,6 +18,6 @@ patientRouter.get('/patients/:id/edit', patientController.editPatient);        /
 patientRouter.put('/patients/:id', patientController.updatePatient);          // Update patient details
 patientRouter.get('/patients/:id/confirm_delete', patientController.confirmDeletePatient);  // Confirm delete patient
 patientRouter.post('/patients/:id', patientController.deletePatient);       // Delete patient
-patientRouter.get('/patients/search/:id', patientController.searchPatient);   // Search for patient by first name or id
+patientRouter.get('/patients/:id/search', patientController.searchPatient);   // Search for patient by first name or id
 
 export default patientRouter;

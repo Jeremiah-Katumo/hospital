@@ -15,6 +15,6 @@ leaveRouter
     .put('/leaves/:id', (req, res) => leaveController.updateLeave(req, res))
     .get('/leaves/:id/confirm_delete', (req, res) => leaveController.confirmDeleteLeave(req, res))
     .post('/leaves/:id', (req, res) => leaveController.deleteLeave(req, res))
-    .post('/leaves/search', (req, res) => leaveController.searchLeave(req, res));
+    .post('/leaves/:id/search', (req, res) => leaveController.searchLeave(req, res));
 
 export default leaveRouter;

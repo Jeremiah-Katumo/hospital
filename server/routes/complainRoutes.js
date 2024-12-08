@@ -16,7 +16,7 @@ complainRouter.get('/complains', (req, res) => complainController.getComplainLis
     .put('/complains/:id', (req, res) => complainController.updateComplain(req, res))
     .get('/complains/:id/confirm_delete', (req, res) => complainController.confirmDeleteComplain(req, res))
     .post('/complains/:id', (req, res) => complainController.deleteComplain(req, res))
-    .get('/complains/search/:id', (req, res) => complainController.searchComplain(req, res));
+    .get('/complains/:id/search', (req, res) => complainController.searchComplain(req, res));
 
 
 export default complainRouter;

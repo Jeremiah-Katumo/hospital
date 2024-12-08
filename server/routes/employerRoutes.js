@@ -16,7 +16,7 @@ employerRouter.get('/employers', (req, res) => employerController.getEmployerLis
     .put('/employers/:id', (req, res) => employerController.updateEmployer(req, res))
     .get('/employers/:id/confirm_delete', (req, res) => employerController.confirmDeleteEmployer(req, res))
     .post('/employers/:id', (req, res) => employerController.deleteEmployer(req, res))
-    .get('/employers/search', (req, res) => employerController.searchEmployer(req, res));
+    .get('/employers/:id/search', (req, res) => employerController.searchEmployer(req, res));
 
 
 export default employerRouter;

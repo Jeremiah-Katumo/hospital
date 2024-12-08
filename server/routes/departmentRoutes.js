@@ -16,7 +16,7 @@ departmentRouter.get('/departments', (req, res) => departmentController.getDepar
     .put('/departments/:id', (req, res) => departmentController.updateDepartment(req, res))
     .get('/departments/:id/confirm_delete', (req, res) => departmentController.confirmDeleteDepartment(req, res))
     .post('/departments/:id', (req, res) => departmentController.deleteDepartment(req, res))
-    .get('/departments/search/:id', (req, res) => departmentController.searchDepartment(req, res));
+    .get('/departments/:id/search', (req, res) => departmentController.searchDepartment(req, res));
 
 
 export default departmentRouter;

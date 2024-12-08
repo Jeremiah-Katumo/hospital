@@ -16,7 +16,7 @@ appointmentRouter.get('/appointments', (req, res) => appointmentController.getAp
     .put('/appointments/:id', (req, res) => appointmentController.updateAppointment(req, res))
     .get('/appointments/:id/confirm_delete', (req, res) => appointmentController.confirmDeleteAppointment(req, res))
     .post('/appointments/:id', (req, res) => appointmentController.deleteAppointment(req, res))
-    .get('/appointments/search/:id', (req, res) => appointmentController.searchAppointment(req, res));
+    .get('/appointments/:id/search', (req, res) => appointmentController.searchAppointment(req, res));
 
 
 export default appointmentRouter;

@@ -8,15 +8,15 @@ const diagnosistController = new DiagnosisController(diagnosisService);
 
 const diagnosisRouter = express.Router();
 
-diagnosisRouter.get('/departments', (req, res) => diagnosistController.getDiagnosisList(req, res))
-    .get('/departments/:id', (req, res) => diagnosistController.getDiagnosisById(req, res))
-    .get('/departments/add', (req, res) => diagnosistController.addDiagnosis(req, res))
-    .post('/departments', (req, res) => diagnosistController.postDiagnosis(req, res))
-    .get('/departments/:id/edit', (req, res) => diagnosistController.editDiagnosis(req, res))
-    .put('/departments/:id', (req, res) => diagnosistController.updateDiagnosis(req, res))
-    .get('/departments/:id/confirm_delete', (req, res) => diagnosistController.confirmDeleteDiagnosis(req, res))
-    .post('/departments/:id', (req, res) => diagnosistController.deleteDiagnosis(req, res))
-    .get('/departments/search/:id', (req, res) => diagnosistController.searchDiagnosis(req, res));
+diagnosisRouter.get('/diagnosis', (req, res) => diagnosistController.getDiagnosisList(req, res))
+    .get('/diagnosis/:id', (req, res) => diagnosistController.getDiagnosisById(req, res))
+    .get('/diagnosis/add', (req, res) => diagnosistController.addDiagnosis(req, res))
+    .post('/diagnosis', (req, res) => diagnosistController.postDiagnosis(req, res))
+    .get('/diagnosis/:id/edit', (req, res) => diagnosistController.editDiagnosis(req, res))
+    .put('/diagnosis/:id', (req, res) => diagnosistController.updateDiagnosis(req, res))
+    .get('/diagnosis/:id/confirm_delete', (req, res) => diagnosistController.confirmDeleteDiagnosis(req, res))
+    .post('/diagnosis/:id', (req, res) => diagnosistController.deleteDiagnosis(req, res))
+    .get('/diagnosis/:id/search', (req, res) => diagnosistController.searchDiagnosis(req, res));
 
 
 export default diagnosisRouter;
