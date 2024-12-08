@@ -1,13 +1,52 @@
+function getRequest(url, on_success) {
+    $.ajax({
+        url: url,
+        method: 'GET',
+        beforeSend: function() {
+            $("#overlay").css("display", "block");
+        }
+    }).done(function(response) {
+        on_success(response);
+    }).fail(function(xhr, status, error) {
+        alert('Error has occurred');
+    }).always(function() {
+        $("#overlay").css("display", "none");
+    });
+}
+
+
+function postRequest(url, data, on_success) {
+    $.post({
+        url: url,
+        data: data,
+        beforeSend: function() {
+            $("#overlay").css("display", "block");
+        }
+    }).done(function(response) {
+        on_success(response);
+    }).fail(function(xhr, status, error) {
+        alert('Error has occurred');
+    }).always(function() {
+        $("#overlay").css("display", "none");
+    });
+}
+
+
 // /public/js/app.js
-$('#signup_form').on('submit', function (e) {
+$('#signup_form').on('click', 'button', function (e) {
     e.preventDefault();
-    const formData = $(this).serialize();
+    const auth_content = $(this).closest('auth-content');
+    const form_id = auth_content.find('form').attr('id');
+    const form = $('#' + form_id);
+    const formData = form.serialize();
+    const url = form.attr('action');
 
     $.ajax({
         type: 'POST',
-        url: '/register',
+        url: url,
         data: formData,
         success: function (response) {
+            console.log(response);
             $('#message').html('<div class="alert alert-success">' + response.message + '</div>');
         },
         error: function (error) {
@@ -15,6 +54,7 @@ $('#signup_form').on('submit', function (e) {
         }
     });
 });
+
 
 $('#login_form').on('submit', function (e) {
     e.preventDefault();
@@ -33,6 +73,7 @@ $('#login_form').on('submit', function (e) {
     });
 });
 
+
 // Forget Password Form Submission
 $('#forget_password_form').on('submit', function (e) {
     e.preventDefault();
@@ -50,6 +91,7 @@ $('#forget_password_form').on('submit', function (e) {
         }
     });
 });
+
 
 // Reset Password Form Submission
 $('#reset_password_form').on('submit', function (e) {
