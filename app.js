@@ -36,8 +36,8 @@ app.use('/templates', express.static(path.join(__dirname, 'views', 'templates'))
 
 app.use(express.static('./server/public/'));
 app.use(cors());
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
+app.use(bodyParser.json());
 app.use(cookieParser());
 // app.use('./signup', signup);
 

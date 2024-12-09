@@ -32,43 +32,114 @@ function postRequest(url, data, on_success) {
 }
 
 
-// /public/js/app.js
-$('#signup_form').on('click', 'button', function (e) {
-    e.preventDefault();
-    const auth_content = $(this).closest('auth-content');
-    const form_id = auth_content.find('form').attr('id');
-    const form = $('#' + form_id);
-    const formData = form.serialize();
-    const url = form.attr('action');
+$(document).ready(function () {
+    const token = localStorage.getItem('authToken'); // Or check cookies
+    if (token) {
+        // Optionally verify the token with the server
+        $.ajax({
+            url: '/verify-token',
+            type: 'POST',
+            headers: { Authorization: `Bearer ${token}` },
+            success: function () {
+                // Token is valid, redirect to dashboard
+                window.location.href = '/dashboards';
+            },
+            error: function () {
+                // Token is invalid or expired; allow access to login page
+                console.log('Invalid or expired token');
+            }
+        });
+    }
+});
 
+
+
+// /public/js/app.js
+$(document).on('submit', '#signup_form', function (e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    const formData = {
+        username: $('input[name="username"]').val(),
+        email: $('input[name="email"]').val(),
+        password: $('input[name="password"]').val(),
+        confirm_password: $('input[name="confirm_password"]').val(),
+        terms: $('input[name="terms"]').prop('checked')
+    };
+
+    // Validate password match
+    if (formData.password !== formData.confirm_password) {
+        alert('Passwords do not match!');
+        return;
+    }
+
+    // Validate terms checkbox
+    if (!formData.terms) {
+        alert('You must agree to the terms and policy!');
+        return;
+    }
+
+    // Send the form data to the server
     $.ajax({
-        type: 'POST',
-        url: url,
-        data: formData,
+        url: '/signup',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
         success: function (response) {
-            console.log(response);
-            $('#message').html('<div class="alert alert-success">' + response.message + '</div>');
+            // alert(response.message || 'Registration successful!');
+            window.location.href = '/login'; // Redirect to login page
         },
-        error: function (error) {
-            $('#message').html('<div class="alert alert-danger">Error: ' + error.responseJSON.message + '</div>');
+        error: function (xhr) {
+            const errorResponse = xhr.responseJSON || {};
+            alert(errorResponse.message || 'An error occurred during registration.');
         }
     });
 });
 
 
-$('#login_form').on('submit', function (e) {
-    e.preventDefault();
-    const formData = $(this).serialize();
+$(document).on('submit', '#login_form', function (e) {
+    e.preventDefault(); // Prevent default form submission
 
+    // Gather the form data
+    const email = $('#login_form input[type="email"]').val().trim();
+    const password = $('#login_form input[type="password"]').val().trim();
+    const remember = $('#login_form input[name="remember"]').prop('checked');
+
+    // Send the AJAX request
     $.ajax({
+        url: '/login', // Match the controller endpoint
         type: 'POST',
-        url: '/login',
-        data: formData,
-        success: function (response) {
-            $('#message').html('<div class="alert alert-success">' + response.message + '</div>');
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            email: email,
+            password: password,
+            remember: remember
+        }),
+        beforeSend: function () {
+            // Optional: Add a loading spinner or disable the button
+            $('.btn-primary').prop('disabled', true).text('Logging in...');
         },
-        error: function (error) {
-            $('#message').html('<div class="alert alert-danger">Error: ' + error.responseJSON.message + '</div>');
+        success: function (response) {
+            if (response.token) {
+                // Store the token in localStorage or cookies
+                localStorage.setItem('authToken', response.token);
+
+                // Redirect to the dashboard or desired location
+                window.location.href = response.redirect || '/dashboards';
+            } else {
+                // Show error message
+                alert(response.message || 'Login failed. Please try again.');
+            }
+        },
+        error: function (xhr, status, error) {
+            // Handle server or network errors
+            console.error('Error:', error);
+            const errorMessage = xhr.responseJSON?.message || 'An error occurred. Please try again.';
+            alert(errorMessage);
+        },
+        complete: function () {
+            // Re-enable the button and reset its text
+            $('.btn-primary').prop('disabled', false).text('Login');
         }
     });
 });

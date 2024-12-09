@@ -3,7 +3,7 @@ export class DashboardController {
         this.dashboardService = dashboardService;
     }
 
-    async renderDashboardPage(req, res) {
+    async getDashboardList(req, res) {
         res.render('dashboard/list.ejs');
     }
 }
