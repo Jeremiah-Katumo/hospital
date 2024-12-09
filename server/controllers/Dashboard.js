@@ -4,6 +4,6 @@ export class DashboardController {
     }
 
     async renderDashboardPage(req, res) {
-        res.render('dashboard/list.ejs');
+        res.render('dashboard/list.njk');
     }
 }
