@@ -3,7 +3,6 @@ import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import nunjucks from 'nunjucks';
 import ejs from 'ejs';
 import multer from 'multer';
 import async from 'async';
@@ -28,14 +27,8 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-nunjucks.configure('views', {
-    autoescape: true,
-    express: app,
-    watch: true,
-});
-
 app.set('views', path.join(__dirname, 'views'));
-app.set('view_engine', 'njk');
+app.set('view_engine', 'ejs');
 // app.set('server/views', path.join(__dirname, 'views'));
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
