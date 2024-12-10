@@ -9,7 +9,7 @@ export class AuthService {
     async findUserByEmail(email) {
         try {
             const [results] = await this.promiseConn.query(
-                'SELECT * FROM users WHERE email = ?',
+                'SELECT * FROM user WHERE email = ?',
                 [email]
             );
             return results[0];
@@ -22,7 +22,7 @@ export class AuthService {
     async insertUser({ username, email, password, emailStatus }) {
         try {
             await this.promiseConn.query(
-                'INSERT INTO users (username, email, password, email_status) VALUES (?, ?, ?, ?)',
+                'INSERT INTO user (username, email, password, email_status) VALUES (?, ?, ?, ?)',
                 [username, email, password, emailStatus]
             );
         } catch (error) {
@@ -46,7 +46,7 @@ export class AuthService {
     async getUserIdByEmail(email) {
         try {
             const [results] = await this.promiseConn.query(
-                'SELECT id FROM users WHERE email = ?',
+                'SELECT id FROM user WHERE email = ?',
                 [email]
             );
             return results[0]?.id || null;
@@ -59,7 +59,7 @@ export class AuthService {
     async updateEmailVerificationStatus(email, status) {
         try {
             await this.promiseConn.query(
-                'UPDATE users SET email_status = ? WHERE email = ?',
+                'UPDATE user SET email_status = ? WHERE email = ?',
                 [status, email]
             );
         } catch (error) {
@@ -110,7 +110,7 @@ export class AuthService {
     async updateUserPassword(userId, hashedPassword) {
         try {
             const query = `
-                UPDATE users 
+                UPDATE user 
                 SET password = ? 
                 WHERE id = ?
             `;
