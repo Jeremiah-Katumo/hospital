@@ -3,14 +3,51 @@ export class HospitalController {
         this.hospitalService = hospitalService;
     }
 
+    // async getHospitalList(req, res) {
+    //     try {
+    //         // Check if the request is an AJAX call for DataTables
+    //         if (req.xhr) {
+    //             const hospitals = await this.hospitalService.getAll();
+    //             res.json({
+    //                 data: hospitals, // Data for DataTables
+    //             });
+    //         } else {
+    //             // Render the page if it's not an AJAX call
+    //             res.render('hospital/list.ejs');
+    //         }
+    //     } catch (err) {
+    //         res.status(500).json({ error: 'Error fetching hospitals: ' + err.message });
+    //     }
+    // }
     async getHospitalList(req, res) {
         try {
-            const hospitals = await this.hospitalService.getAll();
-            res.render('hospital/list.ejs', { list: hospitals });
+            if (req.xhr) {
+                // Extract DataTables parameters
+                const draw = req.body.draw || 1;
+                const start = parseInt(req.body.start) || 0;
+                const length = parseInt(req.body.length) || 10;
+                const searchValue = req.body.search.value || '';
+
+                // Fetch data from the service
+                // const totalRecords = await hospitalService.getTotalCount();
+                const { hospitals, totalRecords, totalFiltered } = await hospitalService.getAll(start, length, searchValue);
+
+                // Send the response in DataTables-compatible format
+                res.json({
+                    draw: draw, // Optional, for DataTables
+                    recordsTotal: totalRecords,
+                    recordsFiltered: totalFiltered,
+                    data: hospitals
+                });
+            } else {
+                // Render the page if not an AJAX call
+                res.render('hospital/list.ejs');
+            }
         } catch (err) {
             res.status(500).json({ error: 'Error fetching hospitals: ' + err.message });
         }
     }
+    
 
     async getHospitalById(req, res) {
         try {
