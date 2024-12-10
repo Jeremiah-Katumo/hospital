@@ -50,8 +50,8 @@ export class PatientController {
     }
 
     postPatient = (req, res) => {
-        const { first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth } = req.body;
-        this.patientService.post(first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth, (err) => {
+        const { first_name, last_name, gender, doctor_id, patient_number, diagnosis, location, date_of_birth } = req.body;
+        this.patientService.post(first_name, last_name, gender, doctor_id, patient_number, diagnosis, location, date_of_birth, (err) => {
             if (err) {
                 res.status(404).json({ error: 'An error occurred while adding patient' });
             }
@@ -70,8 +70,8 @@ export class PatientController {
     }
 
     updatePatient = (req, res) => {
-        const { id, first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth } = req.body;
-        this.patientService.update(id, first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth, (err) => {
+        const { id, first_name, last_name, gender, doctor_id, patient_number, diagnosis, location, date_of_birth } = req.body;
+        this.patientService.update(id, first_name, last_name, gender, doctor_id, patient_number, diagnosis, location, date_of_birth, (err) => {
             if (err) {
                 res.status(404).json({ error: 'Patient already exists' });
             }

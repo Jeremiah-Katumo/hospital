@@ -1,10 +1,10 @@
-export class EmployerService {
+export class EmployeeService {
     constructor(promiseConn) {
         this.promiseConn = promiseConn;
     }
 
     async getAll() {
-        const query = "SELECT * FROM employer LIMIT 10";
+        const query = "SELECT * FROM employee LIMIT 10";
         try {
             const [rows] = await this.promiseConn.query(query);
             return rows;
@@ -14,7 +14,7 @@ export class EmployerService {
     }
 
     async getOne(id) {
-        const query = "SELECT * FROM employer WHERE id = "+id;
+        const query = "SELECT * FROM employee WHERE id = "+id;
         
         try {
             const [rows] = await this.promiseConn.query(query, [id]);
@@ -26,7 +26,7 @@ export class EmployerService {
 
     async post(employer) {
         const query =  `
-            INSERT INTO employer (name,email,join_date,role,salary,phone,department) 
+            INSERT INTO employee (name,email,join_date,role,salary,phone,department) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const params = [
@@ -49,10 +49,10 @@ export class EmployerService {
 
     async update(employer) {
         const query = `
-            UPDATE doctor 
+            UPDATE employee 
             SET 
                 name = ?, email = ?, phone = ?, join_date = ?, role = ?, 
-                salary = ?,, department = ? 
+                salary = ?, department = ? 
             WHERE id = ?
         `;
         const params = [
@@ -75,7 +75,7 @@ export class EmployerService {
     }
 
     async delete(id) {
-        const query = "DELETE employer WHERE id = ?";
+        const query = "DELETE employee WHERE id = ?";
 
         try {
             const [result] = await this.promiseConn.query(query, [id]);
@@ -86,7 +86,7 @@ export class EmployerService {
     }
 
     async search(key) {
-        const query = "SELECT * FROM employer WHERE first_name = ?";
+        const query = "SELECT * FROM employee WHERE first_name = ?";
 
         try {
             const [rows] = await this.promiseConn.query(query, [`%${key}%`]);

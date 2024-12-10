@@ -1,6 +1,6 @@
 import { promiseConn } from '../database/dbConnection.js';
 import { DoctorService } from '../services/doctorServices.js';
-import { EmployerService } from '../services/employerServices.js';
+import { EmployeeService } from '../services/employeeServices.js';
 import { ComplainService } from '../services/complainServices.js';
 import { AppointmentService } from '../services/appointmentServices.js';
 import { DepartmentService } from '../services/departmentServices.js';
@@ -15,7 +15,7 @@ const injector = {
     services: {
         AuthService: new AuthService(promiseConn),
         DoctorService: new DoctorService(promiseConn),
-        EmployerService: new EmployerService(promiseConn),
+        EmployeeService: new EmployeeService(promiseConn),
         AppointMentService: new AppointmentService(promiseConn),
         ComplainService: new ComplainService(promiseConn),
         DepartmentService: new DepartmentService(promiseConn),

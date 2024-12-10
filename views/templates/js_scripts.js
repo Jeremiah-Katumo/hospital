@@ -281,6 +281,11 @@ $('.datepicker').datepicker({
 $('.datatable').DataTable({
     processing: true, // Show processing indicator
     serverSide: true, // Enable server-side processing
+    scrollY: '200px',
+    scrollCollapse: true,
+    fixedColumns: true,
+    fixedHeader: true,
+    responsive: true,
     ajax: {
         url: '/hospitals', // Endpoint to fetch data
         type: 'POST', // Method to use for fetching data

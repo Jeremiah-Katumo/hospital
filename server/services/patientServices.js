@@ -15,12 +15,12 @@ export class PatientService {
         console.log(query);
     }
 
-    post(first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth) {
+    post(first_name, last_name, gender, doctor_id, patient_number, diagnosis, location, date_of_birth) {
         const query = `
-            INSERT INTO patient (first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO patient (first_name, last_name, gender, doctor_id, patient_number, diagnosis, location, date_of_birth)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
-        const params = [first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth];
+        const params = [first_name, last_name, gender, doctor_id, patient_number, diagnosis, location, date_of_birth];
 
         this.promiseConn.query(query, params, (err, result) => {
             if (err) {
@@ -31,15 +31,15 @@ export class PatientService {
         console.log(query);
     }
 
-    update(id, first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth) {
+    update(id, first_name, last_name, gender, doctor_id, patient_number, diagnosis, location, date_of_birth) {
         const query = `
             UPDATE patient
             SET 
-                first_name = ?, last_name = ?, doctor_id = ?, patient_number = ?, 
+                first_name = ?, last_name = ?, gender = ?, doctor_id = ?, patient_number = ?, 
                 diagnosis = ?, location = ?, date_of_birth = ?
             WHERE id = ?
         `;
-        const params = [first_name, last_name, doctor_id, patient_number, diagnosis, location, date_of_birth, id];
+        const params = [first_name, last_name, gender, doctor_id, patient_number, diagnosis, location, date_of_birth, id];
 
         this.promiseConn.query(query, params, (err, result) => {
             if (err) {
