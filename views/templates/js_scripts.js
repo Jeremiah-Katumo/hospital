@@ -295,8 +295,9 @@ $('.datatable').DataTable({
             data: null,
             render: function (data, type, row) {
                 return `
-                    <button class="btn btn-sm btn-primary edit-btn" data-id="${row.id}">Edit</button>
-                    <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}">Delete</button>
+                    <a href="/hospitals/${row.id}/view" class="btn btn-outline-warning btn-rounded"><i class="fas fa-eye"></i></a>
+                    <a href="/hospitals/${row.id}/edit" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
+                    <a href="/hospitals/${row.id}/delete" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
                 `;
             },
         },
