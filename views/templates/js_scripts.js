@@ -278,17 +278,17 @@ $('.datepicker').datepicker({
 //     ]
 // });
 
-$('.datatable').DataTable({
-    processing: true, // Show processing indicator
-    serverSide: true, // Enable server-side processing
+$('#hospital_table').DataTable({
+    processing: true,
+    serverSide: true,
     scrollY: '200px',
     scrollCollapse: true,
     fixedColumns: true,
     fixedHeader: true,
     responsive: true,
     ajax: {
-        url: '/hospitals', // Endpoint to fetch data
-        type: 'POST', // Method to use for fetching data
+        url: '/hospitals/fetch',
+        type: 'POST',
     },
     columns: [
         {

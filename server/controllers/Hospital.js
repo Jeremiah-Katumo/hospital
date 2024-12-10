@@ -3,23 +3,11 @@ export class HospitalController {
         this.hospitalService = hospitalService;
     }
 
-    // async getHospitalList(req, res) {
-    //     try {
-    //         // Check if the request is an AJAX call for DataTables
-    //         if (req.xhr) {
-    //             const hospitals = await this.hospitalService.getAll();
-    //             res.json({
-    //                 data: hospitals, // Data for DataTables
-    //             });
-    //         } else {
-    //             // Render the page if it's not an AJAX call
-    //             res.render('hospital/list.ejs');
-    //         }
-    //     } catch (err) {
-    //         res.status(500).json({ error: 'Error fetching hospitals: ' + err.message });
-    //     }
-    // }
     async getHospitalList(req, res) {
+        res.render('hospital/list.ejs')
+    }
+
+    async fetchHospitals(req, res) {
         try {
             if (req.xhr) {
                 // Extract DataTables parameters
@@ -30,7 +18,7 @@ export class HospitalController {
 
                 // Fetch data from the service
                 // const totalRecords = await hospitalService.getTotalCount();
-                const { hospitals, totalRecords, totalFiltered } = await hospitalService.getAll(start, length, searchValue);
+                const { hospitals, totalRecords, totalFiltered } = await hospitalService.fetch(start, length, searchValue);
 
                 // Send the response in DataTables-compatible format
                 res.json({

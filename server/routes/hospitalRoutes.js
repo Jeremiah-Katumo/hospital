@@ -8,6 +8,7 @@ const hospitalController = new HospitalController(hospitalService);
 const hospitalRouter = express.Router();
 
 hospitalRouter.get('/hospitals', (req, res) => hospitalController.getHospitalList(req, res))
+    .post('/hospitals/fetch', (req, res) => hospitalController.fetchHospitals(req, res))
     .get('/hospitals/:id', (req, res) => hospitalController.getHospitalById(req, res))
     .get('/hospitals/add', (req, res) => hospitalController.addHospital(req, res))
     .post('/hospitals', (req, res) => hospitalController.postHospital(req, res))

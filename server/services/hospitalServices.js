@@ -39,7 +39,7 @@ export class HospitalService {
     //     return data;
     // }
 
-    async getAll(start, length, searchValue) {
+    async fetch(start, length, searchValue) {
         let searchQuery = '';
         const queryParams = [];
     
