@@ -224,3 +224,56 @@ $('#reset_password_form').on('submit', function (e) {
         }
     });
 });
+
+
+$('.datatable').DataTable({
+    stateSave: true,
+    scrollY: '200px',
+    scrollCollapse: true,
+    fixedColumns: true,
+    fixedHeader: true,
+    responsive: true,
+    // dom: 'Bfrtip',
+    buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+    ],
+    columnDefs: [{
+        targets: [0],
+        orderable: false
+    }],
+    // deferLoading: 57,
+    // processing: true,
+    // serverSide: true,
+});
+
+$('.datepicker').datepicker({
+    format: 'yyyy-mm-dd'
+});
+
+
+$('#hospitalTable').DataTable({
+    processing: true,
+    serverSide: false, // Set to true if implementing server-side processing
+    ajax: {
+        url: '/hospitals', // Endpoint serving the data
+        type: 'GET',
+        dataSrc: 'data' // Path to data array in the JSON response
+    },
+    columns: [
+        {
+            data: null,
+            render: function (data, type, row) {
+                return `
+                    <a href="/hospitals/${row.id}" class="btn btn-outline-warning btn-rounded"><i class="fas fa-eye"></i></a>
+                    <a href="/hospitals/${row.id}/edit" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
+                    <a href="/hospitals/${row.id}/delete" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
+                `;
+            }
+        },
+        { data: 'name' },
+        { data: 'description' }, // Adjust to match your database column names
+        { data: 'email' },
+        { data: 'location' },
+        { data: 'phone'}
+    ]
+});
