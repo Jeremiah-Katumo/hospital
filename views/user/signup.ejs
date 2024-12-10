@@ -30,25 +30,26 @@
                     <h6 class="mb-4 text-muted">Create new account</h6>
                     <form action="/signup" id="signup_form">
                         <div class="mb-3 text-start">
-                            <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control" placeholder="Enter Name" required>
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" name="username" id="username" placeholder="Enter Username" required>
                         </div>
                         <div class="mb-3 text-start">
                             <label for="email" class="form-label">Email adress</label>
-                            <input type="email" class="form-control" placeholder="Enter Email" required>
+                            <input type="email" class="form-control" name="email" id="email" placeholder="Enter Email" required>
                         </div>
                         <div class="mb-3 text-start">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" placeholder="Password" required>
+                            <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
                         </div>
                         
                         <div class="mb-3">
-                            <input type="password" class="form-control" placeholder="Confirm password" required>
-                        </div> 
+                            <label for="confirm_password" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="Confirm password" >
+                        </div>
                        
                         <div class="mb-3 text-start">
                             <div class="form-check">
-                              <input class="form-check-input" name="confirm" type="checkbox" value="" id="check1">
+                              <input class="form-check-input" name="terms" type="checkbox" value="" id="check1">
                               <label class="form-check-label" for="check1">
                                 I agree to the <a href="#" tabindex="-1">terms and policy</a>.
                               </label>

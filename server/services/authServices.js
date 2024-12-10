@@ -6,15 +6,15 @@ export class AuthService {
         this.promiseConn = promiseConn;
     }
 
-    async findUserByUsername(username) {
+    async findUserByEmail(email) {
         try {
             const [results] = await this.promiseConn.query(
-                'SELECT * FROM users WHERE username = ?',
-                [username]
+                'SELECT * FROM users WHERE email = ?',
+                [email]
             );
             return results[0];
         } catch (error) {
-            console.error('Error finding user by username:', error.message);
+            console.error('Error finding user by email:', error.message);
             throw error;
         }
     }

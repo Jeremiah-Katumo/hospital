@@ -1,13 +1,13 @@
-{% extends "../templates/header.html" %}
+<%- include('../templates/header'); -%>
 
     <div class="wrapper">
         
-        {% extends "../templates/menu.html" %}
+        <%- include('../templates/menu'); -%>
 
         <div id="body" class="active">
 
             <!-- navbar navigation component -->
-            {% extends "../templates/navbar.html" %}
+            <%- include("../templates/navbar"); -%>
             <!-- end of navbar navigation -->
 
             <div class="content">
@@ -382,4 +382,4 @@
         </div>
     </div>
 
-{% extends "../templates/footer.html" %}
+<%- include("../templates/footer"); -%>

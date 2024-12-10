@@ -8,6 +8,7 @@ import { DiagnosisService } from '../services/diagnosisServices.js';
 import { LeaveService } from '../services/leaveServices.js';
 import { PatientService } from '../services/patientServices.js';
 import { AuthService } from '../services/authServices.js';
+import { HospitalService } from '../services/hospitalServices.js';
 
 
 const injector = {
@@ -21,6 +22,7 @@ const injector = {
         DiagnosisService: new DiagnosisService(promiseConn),
         LeaveService: new LeaveService(promiseConn),
         PatientService: new PatientService(promiseConn),
+        HospitalService: new HospitalService(promiseConn),
     },
     get(serviceName) {
         return this.services[serviceName];
